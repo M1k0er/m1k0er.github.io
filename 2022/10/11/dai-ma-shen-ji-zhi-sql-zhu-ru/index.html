@@ -503,7 +503,7 @@ public String vul(@RequestParam(&quot;username&quot;) String username) throws Cl
 <p>以上代码中虽然参数id做了预编译，但是username却直接进行拼接，这种方式直接导致了SQL注入漏洞的产生。</p>
 <p>用SQLMAP验证SQL注入</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011024813430.png"></p>
-<h1 id="0x04-order-by注入"><a href="#0x04-order-by注入" class="headerlink" title="0x04 order by注入"></a>0x04 order by注入</h1><p>在预编译语句中按照规范也不能彻底防止SQL注入，因为在有些特殊情况下不能使用prepareStatement。order by子句后需要加字段名或者字段位置，而字段名是不能加引号的，否则就会被认为是一个字符串而不是字段名。</p>
+<h2 id="0x04-order-by注入"><a href="#0x04-order-by注入" class="headerlink" title="0x04 order by注入"></a>0x04 order by注入</h2><p>在预编译语句中按照规范也不能彻底防止SQL注入，因为在有些特殊情况下不能使用prepareStatement。order by子句后需要加字段名或者字段位置，而字段名是不能加引号的，否则就会被认为是一个字符串而不是字段名。</p>
 <p>prepareStatement是使用占位符传入参数的，传递的字符都会有单引号包裹，”st.setString(1, id);”会自动加上引号，这样就会导致order by子句失效，这种情况下，智能使用字符拼接的方式，如果要防御SQL注入，就要进行关键字的过滤。</p>
 <p>示例代码</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/vul"</span><span class="token punctuation">)</span>
@@ -524,7 +524,7 @@ public String vul(@RequestParam(&quot;username&quot;) String username) throws Cl
     connect<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="0x05-和-的区别"><a href="#0x05-和-的区别" class="headerlink" title="0x05 #{}和${}的区别"></a>0x05 #{}和${}的区别</h1><p>在MyBatis中，#{}在底层实现上使用”?”作为占位符来生成prepareStatement，也是参数化查询预编译的机制，而${}将传入的数据直接显示在SQL语句中，类似于字符串拼接，可能会导致SQL注入。</p>
+<h2 id="0x05-和-的区别"><a href="#0x05-和-的区别" class="headerlink" title="0x05 #{}和${}的区别"></a>0x05 #{}和${}的区别</h2><p>在MyBatis中，#{}在底层实现上使用”?”作为占位符来生成prepareStatement，也是参数化查询预编译的机制，而${}将传入的数据直接显示在SQL语句中，类似于字符串拼接，可能会导致SQL注入。</p>
 <pre><code>SELECT * FROM user WHERE id=#&#123;id&#125;  //安全的写法
 SELECT * FROM user WHERE id=$&#123;id&#125;  //不安全的写法</code></pre>
 <p>示例代码，在”userMapprt.xml”定义SQL映射文件中设置的是”${id}”不安全写法</p>
@@ -533,7 +533,7 @@ SELECT * FROM user WHERE id=$&#123;id&#125;  //不安全的写法</code></pre>
         select * from user where id=${id}
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mapper</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="0x06-Mybatis常见SQL注入漏洞"><a href="#0x06-Mybatis常见SQL注入漏洞" class="headerlink" title="0x06 Mybatis常见SQL注入漏洞"></a>0x06 Mybatis常见SQL注入漏洞</h1><p>1)、order by 查询</p>
+<h2 id="0x06-Mybatis–常见SQL注入分析"><a href="#0x06-Mybatis–常见SQL注入分析" class="headerlink" title="0x06 Mybatis–常见SQL注入分析"></a>0x06 Mybatis–常见SQL注入分析</h2><p>1)、order by 查询</p>
 <p>order by不能使用参数化查询的方式，只能使用字符拼接的方式，而在Mybatis中#{}是进行参数化查询的，要使用order by只能使用${}，如果开发者没有对此进行关键字过滤，则会导致SQL注入的产生。</p>
 <pre><code>&lt;mapper namespace=&quot;org.joychou.mapper.UserMapper&quot;&gt;
     &lt;select id=&quot;OrderByUsername&quot; resultMap=&quot;User&quot;&gt;
@@ -563,7 +563,7 @@ SELECT * FROM user WHERE id=$&#123;id&#125;  //不安全的写法</code></pre>
 2、xml方式编写sql时，可以先筛选xml文件搜索$,逐个分析，要特别注意mybatis-generator的order by注入 
 3、Mybatis注解编写sql时方法类似 
 4、java层面应该做好参数检查，假定用户输入均为恶意输入，防范潜在的攻击</code></pre>
-<h1 id="0x07-SQL注入代码审计总结"><a href="#0x07-SQL注入代码审计总结" class="headerlink" title="0x07 SQL注入代码审计总结"></a>0x07 SQL注入代码审计总结</h1><p>总结了下面几种常见的关键字，我们可以通过这些关键字快速定位到SQL语句</p>
+<h2 id="0x07-SQL注入代码审计总结"><a href="#0x07-SQL注入代码审计总结" class="headerlink" title="0x07 SQL注入代码审计总结"></a>0x07 SQL注入代码审计总结</h2><p>总结了下面几种常见的关键字，我们可以通过这些关键字快速定位到SQL语句</p>
 <pre><code>Statement
 createStatement
 PrepareStatement
@@ -572,7 +572,7 @@ in($&#123;
 select
 update
 insert</code></pre>
-
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
                 
             </div>
             <hr/>
