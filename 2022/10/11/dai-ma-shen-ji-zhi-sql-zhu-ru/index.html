@@ -457,10 +457,10 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>​                                                        要对每一个明天怀有恰到好处的期待。</p>
-<h1 id="0x01-SQL注入"><a href="#0x01-SQL注入" class="headerlink" title="0x01 SQL注入?"></a>0x01 SQL注入?</h1><p>当请求没有经过严格的过滤的时候，攻击者便可以将一段SQL代码插入到请求中，服务端接受该恶意请求后，便会执行恶意的SQL命令，理论上任何数据交互的请求如果没有经过任何有效的过滤，都会造成SQL注入。</p>
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>​                                                        要对每一个明天怀有恰到好处的期待。</p>
+<h2 id="0x01-SQL注入"><a href="#0x01-SQL注入" class="headerlink" title="0x01 SQL注入?"></a>0x01 SQL注入?</h2><p>当请求没有经过严格的过滤的时候，攻击者便可以将一段SQL代码插入到请求中，服务端接受该恶意请求后，便会执行恶意的SQL命令，理论上任何数据交互的请求如果没有经过任何有效的过滤，都会造成SQL注入。</p>
 <p>以下是我在学习java代码审计中遇到的几种可能造成SQL注入的场景。</p>
-<h1 id="0x02-直接动态拼接"><a href="#0x02-直接动态拼接" class="headerlink" title="0x02 直接动态拼接"></a>0x02 直接动态拼接</h1><p>示例代码</p>
+<h2 id="0x02-直接动态拼接"><a href="#0x02-直接动态拼接" class="headerlink" title="0x02 直接动态拼接"></a>0x02 直接动态拼接</h2><p>示例代码</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
 JdbcTemplate jdbcTemplate<span class="token punctuation">;</span>
 <span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/sql"</span><span class="token punctuation">)</span>
@@ -471,12 +471,12 @@ JdbcTemplate jdbcTemplate<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>将@RequestParam获取的id拼接在sql语句中，并通过jdbcTemplate.queryForList执行SQL语句，期间没有经过任何的过滤，因此这里存在SQL注入。</p>
 <pre><code>and 1=1</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015346535.png" alt="image-20221011015346535"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015346535.png"></p>
 <pre><code>and 1=2</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015418217.png" alt="image-20221011015418217"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015418217.png"></p>
 <p>用sqlmap也能直接跑出数据库</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015507113.png" alt="image-20221011015507113"></p>
-<h1 id="0x03-预编译有误"><a href="#0x03-预编译有误" class="headerlink" title="0x03 预编译有误"></a>0x03 预编译有误</h1><p>使用PreparedStatement来执行SQL语句是因为预编译参数化查询能够有效地防止SQL注入，但是由于开发者的个人习惯没有严格按照PreparedStatement的开发方式进行查询，导致在预编译语句中使用了错误的编程方式，同样也会产生注入。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015507113.png"></p>
+<h2 id="0x03-预编译有误"><a href="#0x03-预编译有误" class="headerlink" title="0x03 预编译有误"></a>0x03 预编译有误</h2><p>使用PreparedStatement来执行SQL语句是因为预编译参数化查询能够有效地防止SQL注入，但是由于开发者的个人习惯没有严格按照PreparedStatement的开发方式进行查询，导致在预编译语句中使用了错误的编程方式，同样也会产生注入。</p>
 <p>示例代码</p>
 <pre><code>@RequestMapping(&quot;/vul&quot;)
 public String vul(@RequestParam(&quot;username&quot;) String username) throws ClassNotFoundException, SQLException &#123;
@@ -502,7 +502,7 @@ public String vul(@RequestParam(&quot;username&quot;) String username) throws Cl
     &#125;</code></pre>
 <p>以上代码中虽然参数id做了预编译，但是username却直接进行拼接，这种方式直接导致了SQL注入漏洞的产生。</p>
 <p>用SQLMAP验证SQL注入</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011024813430.png" alt="image-20221011024813430"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011024813430.png"></p>
 <h1 id="0x04-order-by注入"><a href="#0x04-order-by注入" class="headerlink" title="0x04 order by注入"></a>0x04 order by注入</h1><p>在预编译语句中按照规范也不能彻底防止SQL注入，因为在有些特殊情况下不能使用prepareStatement。order by子句后需要加字段名或者字段位置，而字段名是不能加引号的，否则就会被认为是一个字符串而不是字段名。</p>
 <p>prepareStatement是使用占位符传入参数的，传递的字符都会有单引号包裹，”st.setString(1, id);”会自动加上引号，这样就会导致order by子句失效，这种情况下，智能使用字符拼接的方式，如果要防御SQL注入，就要进行关键字的过滤。</p>
 <p>示例代码</p>
