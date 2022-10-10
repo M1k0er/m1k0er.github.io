@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="cn">
+<html lang="zh-CN">
 
 
 <head>
@@ -29,7 +29,9 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
 
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="m1k0er'Blogs" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 
@@ -57,7 +59,7 @@
       
       <i class="fas fa-home" style="zoom: 0.6;"></i>
       
-      <span>Index</span>
+      <span>首页</span>
     </a>
     
   </li>
@@ -68,7 +70,7 @@
       
       <i class="fas fa-tags" style="zoom: 0.6;"></i>
       
-      <span>Tags</span>
+      <span>标签</span>
     </a>
     
   </li>
@@ -79,7 +81,7 @@
       
       <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
       
-      <span>Categories</span>
+      <span>分类</span>
     </a>
     
   </li>
@@ -90,7 +92,7 @@
       
       <i class="fas fa-archive" style="zoom: 0.6;"></i>
       
-      <span>Archives</span>
+      <span>归档</span>
     </a>
     
   </li>
@@ -101,18 +103,7 @@
       
       <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
       
-      <span>About</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/contact" class="waves-effect waves-light">
-      
-      <i class="fas fa-comments" style="zoom: 0.6;"></i>
-      
-      <span>Contact</span>
+      <span>关于</span>
     </a>
     
   </li>
@@ -123,14 +114,14 @@
       
       <i class="fas fa-address-book" style="zoom: 0.6;"></i>
       
-      <span>Friends</span>
+      <span>友情链接</span>
     </a>
     
   </li>
   
   <li>
     <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="Search" style="zoom: 0.85;"></i>
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
     </a>
   </li>
 </ul>
@@ -160,7 +151,7 @@
 			
 			    <i class="fa-fw fas fa-home"></i>
 			
-			Index
+			首页
 		</a>
           
         </li>
@@ -171,7 +162,7 @@
 			
 			    <i class="fa-fw fas fa-tags"></i>
 			
-			Tags
+			标签
 		</a>
           
         </li>
@@ -182,7 +173,7 @@
 			
 			    <i class="fa-fw fas fa-bookmark"></i>
 			
-			Categories
+			分类
 		</a>
           
         </li>
@@ -193,7 +184,7 @@
 			
 			    <i class="fa-fw fas fa-archive"></i>
 			
-			Archives
+			归档
 		</a>
           
         </li>
@@ -204,18 +195,7 @@
 			
 			    <i class="fa-fw fas fa-user-circle"></i>
 			
-			About
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/contact" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-comments"></i>
-			
-			Contact
+			关于
 		</a>
           
         </li>
@@ -226,7 +206,7 @@
 			
 			    <i class="fa-fw fas fa-address-book"></i>
 			
-			Friends
+			友情链接
 		</a>
           
         </li>
@@ -234,7 +214,7 @@
         
         <li><div class="divider"></div></li>
         <li>
-            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+            <a href="https://github.com/M1k0er" class="waves-effect waves-light" target="_blank">
                 <i class="fab fa-github-square fa-fw"></i>Fork Me
             </a>
         </li>
@@ -291,7 +271,7 @@
     }
 </style>
 
-<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+<a href="https://github.com/M1k0er" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
    data-tooltip="Fork Me" data-position="left" data-delay="50">
     <svg viewBox="0 0 250 250" aria-hidden="true">
         <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
@@ -450,7 +430,7 @@
             <div class="post-info">
                 
                 <div class="post-date info-break-policy">
-                    <i class="far fa-calendar-minus fa-fw"></i>Publish Date:&nbsp;&nbsp;
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
                     2021-01-22
                 </div>
                 
@@ -477,39 +457,38 @@
 
 <h1 id="二、水平域的收集"><a href="#二、水平域的收集" class="headerlink" title="二、水平域的收集"></a>二、水平域的收集</h1><p>当你挖一家厂商时，可以先看看厂商在hackerone是否有项目，有的话可以去里面收集范围：<br><img src="https://img-blog.csdnimg.cn/20210122173407447.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>如果希望在hackerone给的赏金范围上继续进行资产的收集，我们可以将目光转到 <a target="_blank" rel="noopener" href="https://crunchbase.com/">https://crunchbase.com</a> 的网站，进一步扩大我们的业务范围。</p>
 <p>从这里我们可以看到很多收购行为，我们需要对这些收购行为进行谷歌搜索并分析，以确定这个行为是否仍属于母公司，而并没有拆分和出售给其他公司:<br><img src="https://img-blog.csdnimg.cn/20210122174255277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>当然我们也可以通过反whois查询来查询注册邮箱或者联系人下的资产信息，如下图，我们首先来看看yahoo的whois：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whois yahoo.com</span><br></pre></td></tr></table></figure>
-<p><img src="https://img-blog.csdnimg.cn/20210122174512416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>通过whois查看到注册人邮箱为<a href="mailto:&#x64;&#x6f;&#x6d;&#x61;&#105;&#110;&#x2d;&#97;&#100;&#x6d;&#105;&#110;&#x40;&#111;&#x61;&#116;&#x68;&#46;&#x63;&#x6f;&#109;">&#x64;&#x6f;&#x6d;&#x61;&#105;&#110;&#x2d;&#97;&#100;&#x6d;&#105;&#110;&#x40;&#111;&#x61;&#116;&#x68;&#46;&#x63;&#x6f;&#109;</a>，我们就可以通过此电子邮箱来查找与yahoo.com 具有相同注册人电子邮件的所有其他站点，你可以通过 <a target="_blank" rel="noopener" href="https://tools.whoisxmlapi.com/reverse-whois-search">https://tools.whoisxmlapi.com/reverse-whois-search</a> 来进行查询，也可以通过 <a target="_blank" rel="noopener" href="https://viewdns.info/">https://viewdns.info</a> 来进行反whois查询，渗透测试神器amass也提供了相应的查询功能，查询的命令为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">amass intel -whois -d yahoo-inc.com</span><br></pre></td></tr></table></figure>
+<pre><code>whois yahoo.com</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20210122174512416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>通过whois查看到注册人邮箱为<a href="mailto:&#100;&#x6f;&#x6d;&#x61;&#x69;&#x6e;&#x2d;&#x61;&#x64;&#x6d;&#x69;&#x6e;&#x40;&#111;&#97;&#116;&#104;&#x2e;&#x63;&#x6f;&#109;">&#100;&#x6f;&#x6d;&#x61;&#x69;&#x6e;&#x2d;&#x61;&#x64;&#x6d;&#x69;&#x6e;&#x40;&#111;&#97;&#116;&#104;&#x2e;&#x63;&#x6f;&#109;</a>，我们就可以通过此电子邮箱来查找与yahoo.com 具有相同注册人电子邮件的所有其他站点，你可以通过 <a target="_blank" rel="noopener" href="https://tools.whoisxmlapi.com/reverse-whois-search">https://tools.whoisxmlapi.com/reverse-whois-search</a> 来进行查询，也可以通过 <a target="_blank" rel="noopener" href="https://viewdns.info/">https://viewdns.info</a> 来进行反whois查询，渗透测试神器amass也提供了相应的查询功能，查询的命令为：</p>
+<pre><code>amass intel -whois -d yahoo-inc.com</code></pre>
 <p>有时候我们会遇到域名有屏蔽关键信息的现象，导致我们没办法看到真正的注册邮箱，这个时候我们可以通过查询域名的历史whois来得到关键信息，这时我们可以使用 <a target="_blank" rel="noopener" href="https://www.whoxy.com/">https://www.whoxy.com/</a> 来查询历史whois。</p>
 <h1 id="三、ASN枚举"><a href="#三、ASN枚举" class="headerlink" title="三、ASN枚举"></a>三、ASN枚举</h1><p>通过(bgp.he.net)来查询as号：</p>
 <p>我们可以利用amass来查询组织名称中带有sony的asn号，使用的命令是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">amass intel -org sony</span><br></pre></td></tr></table></figure>
+<pre><code>amass intel -org sony</code></pre>
 <p>通过<a target="_blank" rel="noopener" href="https://github.com/yassineaboukir/Asnlookup">Asnlookup</a>来获取特定组织的资产ip段。</p>
 <h1 id="四、垂直域的收集"><a href="#四、垂直域的收集" class="headerlink" title="四、垂直域的收集"></a>四、垂直域的收集</h1><p>子域名枚举是信息收集工作中最为重要的一环，子域名收集得越全，你挖到漏洞的概率也会相应地增加，这里就简单讲下我平时收集子域名的主要几种方式吧。<br>1、通过burpsuite收集子域名</p>
 <p>第一步，确定收集的范围；<br>第二步，对所有的链接进行爬行，爬虫的工具很多，这里不多加述说，这里我使用的是burpsuite：<br><img src="https://img-blog.csdnimg.cn/20210122181243476.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>从以上两步操作后，我们可以对获取的子域名进行第二次爬虫，当然，逆向结果尽可能多点，可以多爬几次。<br>第三步，导出子域名<br>“Engagement Tools” -&gt; “Analyze target” -&gt; 保存为html文件 -&gt; 从html文件中复制出我们的host。<br>我们还可以从爬行的js文件中获取子域名，具体操作步骤如下：</p>
 <p>将所有的链接复制到js.txt中，筛选处js文件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat js.txt | grep ‘\.js’</span><br></pre></td></tr></table></figure>
+<pre><code>cat js.txt | grep ‘\.js’</code></pre>
 <p>利用<a target="_blank" rel="noopener" href="https://github.com/nsonaniya2010/SubDomainizer">SubDomainizer</a>来获取js文件中的子域名。</p>
 <p>2、从api接口获取子域名</p>
 <p>互联网上有很多能够查询域信息的网站，如crt.sh，DNSDB，virustotal，sslmate等网站，我们可以利用这些网站来收集更多的子域名，我经常使用的是以下两款个人感觉好用的工具：</p>
 <ul>
 <li>利用amass查找子域名：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">amass enum --passive -d baidu.com</span><br></pre></td></tr></table></figure>
+<pre><code>amass enum --passive -d baidu.com</code></pre>
 <ul>
-<li>利用subfinder来查询子域名：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo baidu.com | subfinder</span><br></pre></td></tr></table></figure>
-
-
+<li>利用subfinder来查询子域名：<pre><code>echo baidu.com | subfinder</code></pre>
 </li>
 </ul>
 <p>3、基于字典的子域名枚举</p>
 <p>基于字典的子域名枚举的工具有很多，以下是我经常使用的工具:</p>
 <ul>
-<li>使用amass爆破子域名：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">amass enum -brute -d baidu.com -w ~&#x2F;Desktop&#x2F;tool&#x2F;fuzz&#x2F;dns&#x2F;sub_small.txt</span><br></pre></td></tr></table></figure></li>
-<li>使用shuffledns爆破子域名：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shuffledns -d baidu.com -r ~&#x2F;tools&#x2F;massdns&#x2F;lists&#x2F;resolvers.txt -w ~&#x2F;Desktop&#x2F;tool&#x2F;fuzz&#x2F;dns&#x2F;sub_small.txt</span><br></pre></td></tr></table></figure>
+<li>使用amass爆破子域名：<pre><code>amass enum -brute -d baidu.com -w ~/Desktop/tool/fuzz/dns/sub_small.txt</code></pre>
+</li>
+<li>使用shuffledns爆破子域名：<pre><code>shuffledns -d baidu.com -r ~/tools/massdns/lists/resolvers.txt -w ~/Desktop/tool/fuzz/dns/sub_small.txt</code></pre>
 <h1 id="五、端口扫描"><a href="#五、端口扫描" class="headerlink" title="五、端口扫描"></a>五、端口扫描</h1>1、利用nmap对前面收集的子域名进行全端口的扫描：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV -sS -iL sub.txt --open -p- -T4 -oX result.xml</span><br></pre></td></tr></table></figure>
+<pre><code>nmap -sV -sS -iL sub.txt --open -p- -T4 -oX result.xml</code></pre>
 <p>2、解析nmap扫描结果，对于最终的扫描结果，我们需要解析获取相应的数据。</p>
 <p>3、对于开启web端口的我们需要获取标题，状态码等信息，我们可以使用<a target="_blank" rel="noopener" href="https://github.com/projectdiscovery/httpx">httpx</a>来达到这个目的。</p>
 <h1 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h1><p>以上便是我对企业资产进行收集的全过程，有不足的部分还要请各位师傅请教。</p>
@@ -525,7 +504,7 @@
             <div class="reprint__author">
                 <span class="reprint-meta" style="font-weight: bold;">
                     <i class="fas fa-user">
-                        Author:
+                        文章作者:
                     </i>
                 </span>
                 <span class="reprint-info">
@@ -535,23 +514,23 @@
             <div class="reprint__type">
                 <span class="reprint-meta" style="font-weight: bold;">
                     <i class="fas fa-link">
-                        Link:
+                        文章链接:
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/01/22/%E6%88%91%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E8%AE%BA/">http://example.com/2021/01/22/%E6%88%91%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E8%AE%BA/</a>
+                    <a href="http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/">http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/</a>
                 </span>
             </div>
             <div class="reprint__notice">
                 <span class="reprint-meta" style="font-weight: bold;">
                     <i class="fas fa-copyright">
-                        Reprint policy:
+                        版权声明:
                     </i>
                 </span>
                 <span class="reprint-info">
-                    All articles in this blog are used except for special statements
+                    本博客所有文章除特別声明外，均采用
                     <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
-                    reprint polocy. If reproduced, please indicate source
+                    许可协议。转载请注明来源
                     <a href="/about" target="_blank">m1k0er</a>
                     !
                 </span>
@@ -561,7 +540,7 @@
 
     <script async defer>
       document.addEventListener("copy", function (e) {
-        let toastHTML = '<span>Copied successfully, please follow the reprint policy of this article</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">more</a>';
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
         M.toast({html: toastHTML})
       });
 
@@ -593,7 +572,7 @@
 <div id="article-share">
 
     
-    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <div class="social-share" data-sites="twitter,facebook,google" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
     <script src="/libs/share/js/social-share.min.js"></script>
     
 
@@ -754,10 +733,10 @@
         
         <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;Current
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/2021/01/22/%E6%88%91%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E8%AE%BA/">
+                <a href="/2021/01/22/wo-de-xin-xi-shou-ji-lun/">
                     <div class="card-image">
                         
                         
@@ -804,10 +783,10 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                Current&nbsp;<i class="far fa-dot-circle"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
-                <a href="/2021/01/22/%E6%88%91%E7%9A%84%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E8%AE%BA/">
+                <a href="/2021/01/22/wo-de-xin-xi-shou-ji-lun/">
                     <div class="card-image">
                         
                         
@@ -875,11 +854,34 @@
 
 <script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
 
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFunction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
 
     </div>
     <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
         <div class="toc-widget card" style="background-color: white;">
-            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;TOC</div>
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
             <div id="toc-content"></div>
         </div>
     </div>
@@ -1037,9 +1039,9 @@
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2019-2022</span>
+                <span id="year">2022</span>
             
-            <span id="year">2019</span>
+            <span id="year">2022</span>
             <a href="/about" target="_blank">m1k0er</a>
             |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
             |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
@@ -1067,15 +1069,6 @@
             
         </div>
         <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/blinkfox" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:1181062873@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
 
 
 
@@ -1083,19 +1076,12 @@
 
 
 
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
-        <i class="fab fa-qq"></i>
-    </a>
 
 
 
 
 
 
-
-    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
-        <i class="fas fa-rss"></i>
-    </a>
 
 </div>
     </div>
@@ -1108,8 +1094,8 @@
 <div id="searchModal" class="modal">
     <div class="modal-content">
         <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;Search</span>
-            <input type="search" id="searchInput" name="s" placeholder="Please enter a search keyword"
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
                    class="search-input">
         </div>
         <div id="searchResult"></div>
