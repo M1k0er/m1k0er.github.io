@@ -466,7 +466,7 @@
 <p>3、SQL注入漏洞</p>
 <p>4、接口未授权漏洞</p>
 <p>5、任意文件下载漏洞经过分析，第一个漏洞已经无法使用，访问该目录全都返回200，然后提示无法执行：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023452914.png" alt="image-20221012023452914"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023452914.png"></p>
 <p>然后仔细看了下页面html代码，发现了这一段：</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023546638.png"></p>
 <p>尝试构造新的url直接访问：<code>http://xxx.com/tplus/view/login.html?fromApp=b2b&amp;acc=1&amp;role=demo&amp;industry=edu</code>提示：</p>
