@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="代码审计之SQL注入, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="java之IO流, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>代码审计之SQL注入 | m1k0er&#39;Blogs</title>
+    <title>java之IO流 | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/15.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">代码审计之SQL注入</h1>
+                    <h1 class="description center-align post-title">java之IO流</h1>
                 </div>
             </div>
         </div>
@@ -411,8 +411,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                <span class="chip bg-color">代码审计</span>
+                            <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                                <span class="chip bg-color">编程</span>
                             </a>
                         
                     </div>
@@ -423,8 +423,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
-                                代码审计
+                            <a href="/categories/%E7%BC%96%E7%A8%8B/" class="post-category">
+                                编程
                             </a>
                         
                     </div>
@@ -457,122 +457,115 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>​                                                        要对每一个明天怀有恰到好处的期待。</p>
-<h2 id="0x01-SQL注入"><a href="#0x01-SQL注入" class="headerlink" title="0x01 SQL注入?"></a>0x01 SQL注入?</h2><p>当请求没有经过严格的过滤的时候，攻击者便可以将一段SQL代码插入到请求中，服务端接受该恶意请求后，便会执行恶意的SQL命令，理论上任何数据交互的请求如果没有经过任何有效的过滤，都会造成SQL注入。</p>
-<p>以下是我在学习java代码审计中遇到的几种可能造成SQL注入的场景。</p>
-<h2 id="0x02-直接动态拼接"><a href="#0x02-直接动态拼接" class="headerlink" title="0x02 直接动态拼接"></a>0x02 直接动态拼接</h2><p>示例代码</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
-JdbcTemplate jdbcTemplate<span class="token punctuation">;</span>
-<span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/sql"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> List<span class="token operator">&lt;</span>Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span>Object<span class="token operator">>></span> <span class="token function">userList</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span> String id<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    String sql <span class="token operator">=</span> <span class="token string">"select * from users where id="</span><span class="token operator">+</span>id<span class="token punctuation">;</span>
-    List<span class="token operator">&lt;</span>Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span>Object<span class="token operator">>></span> maps <span class="token operator">=</span> jdbcTemplate<span class="token punctuation">.</span><span class="token function">queryForList</span><span class="token punctuation">(</span>sql<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> maps<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>将@RequestParam获取的id拼接在sql语句中，并通过jdbcTemplate.queryForList执行SQL语句，期间没有经过任何的过滤，因此这里存在SQL注入。</p>
-<pre><code>and 1=1</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015346535.png"></p>
-<pre><code>and 1=2</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015418217.png"></p>
-<p>用sqlmap也能直接跑出数据库</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011015507113.png"></p>
-<h2 id="0x03-预编译有误"><a href="#0x03-预编译有误" class="headerlink" title="0x03 预编译有误"></a>0x03 预编译有误</h2><p>使用PreparedStatement来执行SQL语句是因为预编译参数化查询能够有效地防止SQL注入，但是由于开发者的个人习惯没有严格按照PreparedStatement的开发方式进行查询，导致在预编译语句中使用了错误的编程方式，同样也会产生注入。</p>
-<p>示例代码</p>
-<pre><code>@RequestMapping(&quot;/vul&quot;)
-public String vul(@RequestParam(&quot;username&quot;) String username) throws ClassNotFoundException, SQLException &#123;
-    StringBuilder result = new StringBuilder();
-    Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);
-    Connection connect = DriverManager.getConnection(&quot;jdbc:mysql://localhost:3306/java_sec_code?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&quot;,&quot;root&quot;,&quot;1q2w3e4r&quot;);
-    String name = username;
-    String id = &quot;1&quot;;
-    String sql = &quot;SELECT * FROM users where id=?&quot;;
-    sql += &quot;and username like &#39;%&quot;+name+&quot;%&#39;&quot;;
-    PreparedStatement st = conn.prepareStatement(sql);
-    st.setString(1,id);
-    ResultSet rs = st.executeQuery();
-    while (rs.next()) &#123;
-        String res_name = rs.getString(&quot;username&quot;);
-        String res_pwd = rs.getString(&quot;password&quot;);
-        String info = String.format(&quot;%s: %s\n&quot;, res_name, res_pwd);
-        result.append(info);
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>如果你掉进了黑暗里，你能做的，不过是静心等待，直到你的双眼适应黑暗。</p>
+<h2 id="0x01-什么是IO流"><a href="#0x01-什么是IO流" class="headerlink" title="0x01 什么是IO流"></a>0x01 什么是IO流</h2><p>IO是指 Input/Output，即输入和输出。以内存为中心：</p>
+<ul>
+<li>Input 指从外部读入数据到内存，例如把文件从磁盘读取到内存，从网络读取数据到内存等等。</li>
+<li>Output 指把数据从内存输出到外部，例如把数据从内存写入到文件，把数据从内存输出到网络等等。</li>
+</ul>
+<p>Java 代码是在内存中运行的，所以数据也必须读到内存才能对其进行处理，数据在 Java 代码中的最终表示方式无非是 byte数组，字符串等这些 Java 数据类型，都必须存放在内存里。</p>
+<p>从 Java 代码来看，输入实际上就是从外部，例如硬盘上的某个文件，把内容读到内存，并且以 Java 提供的某种数据类型表示，例如，<code>byte[]</code>，<code>String</code>，这样，后续代码才能处理这些数据。因为内存有“易失性”的特点，所以必须把处理后的数据以某种方式输出，例如，写入到文件。Output 实际上就是把 Java 表示的数据格式，例如，<code>byte[]</code>，<code>String</code>等输出到某个地方。</p>
+<p>IO 流是一种顺序读写数据的模式，它的特点是单向流动。数据类似自来水一样在水管中流动，所以我们把它称为IO流。IO流以<code>byte</code>（字节）为最小单位，因此也称为字节流。</p>
+<h2 id="0x02-IO的分类"><a href="#0x02-IO的分类" class="headerlink" title="0x02 IO的分类"></a>0x02 IO的分类</h2><h3 id="1、传输方式"><a href="#1、传输方式" class="headerlink" title="1、传输方式"></a>1、传输方式</h3><p>从数据传输方式或者说是运输方式角度看，可以将 IO 类分为:</p>
+<ul>
+<li>字节流</li>
+<li>字符流</li>
+</ul>
+<p>字节是个计算机看的，字节才是给人看的。简单说下这两者的区别，字节流读取单个字节，字符流读取单个字符(一个字符根据编码的不同，对应的字节也不同，如 UTF-8 编码中文汉字是 3 个字节，GBK编码中文汉字是 2 个字节。)，除了读取的方式不同以外，字节流一般用来处理二进制文件(图片、MP3、视频文件)，而字符流用来处理文本文件(可以看做是特殊的二进制文件，使用了某种编码，人可以阅读)。</p>
+<h3 id="2、数据操作"><a href="#2、数据操作" class="headerlink" title="2、数据操作"></a>2、数据操作</h3><p>从数据来源或者说是操作对象角度看，IO 类可以分为以下几大类</p>
+<ul>
+<li>文件文件(file)：FileInputStream、FileOutputStream、FileReader、FileWriter</li>
+<li>数组([])：字节数组(byte[]): ByteArrayInputStream、ByteArrayOutputStream、字符数组(char[]): CharArrayReader、CharArrayWriter</li>
+<li>管道操作：PipedInputStream、PipedOutputStream、PipedReader、PipedWriter</li>
+<li>基本数据类型：DataInputStream、DataOutputStream</li>
+<li>缓冲操作：BufferedInputStream、BufferedOutputStream、BufferedReader、BufferedWriter</li>
+<li>打印：PrintStream、PrintWriter</li>
+<li>对象序列化反序列化：ObjectInputStream、ObjectOutputStream</li>
+<li>转换：InputStreamReader、OutputStreamWriter</li>
+</ul>
+<h2 id="0x03-关于IO流的常用操作"><a href="#0x03-关于IO流的常用操作" class="headerlink" title="0x03 关于IO流的常用操作"></a>0x03 关于IO流的常用操作</h2><h3 id="1、java-lang-Runtime"><a href="#1、java-lang-Runtime" class="headerlink" title="1、java.lang.Runtime"></a>1、java.lang.Runtime</h3><p>在以往见过的Java命令执行漏洞中，payload经常通过java.lang.Runtime公共类中的exec()方法来执行系统命令，示例代码如下</p>
+<pre><code>import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class TestExec &#123;
+    public static void main(String[] args) throws Exception &#123;
+        String line;
+        String [] cmd=&#123;&quot;cmd&quot;,&quot;/C&quot;,&quot;whoami&quot;&#125;;
+        Process process = Runtime.getRuntime().exec(cmd);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(),&quot;GBK&quot;));
+        while((line = reader.readLine()) != null)&#123;
+            System.out.println(line);
+        &#125;
+        reader.close();
     &#125;
-    rs.close();
-    connect.close();
-    return result.toString();
-    &#125;</code></pre>
-<p>以上代码中虽然参数id做了预编译，但是username却直接进行拼接，这种方式直接导致了SQL注入漏洞的产生。</p>
-<p>用SQLMAP验证SQL注入</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011024813430.png"></p>
-<h2 id="0x04-order-by注入"><a href="#0x04-order-by注入" class="headerlink" title="0x04 order by注入"></a>0x04 order by注入</h2><p>在预编译语句中按照规范也不能彻底防止SQL注入，因为在有些特殊情况下不能使用prepareStatement。order by子句后需要加字段名或者字段位置，而字段名是不能加引号的，否则就会被认为是一个字符串而不是字段名。</p>
-<p>prepareStatement是使用占位符传入参数的，传递的字符都会有单引号包裹，”st.setString(1, id);”会自动加上引号，这样就会导致order by子句失效，这种情况下，智能使用字符拼接的方式，如果要防御SQL注入，就要进行关键字的过滤。</p>
-<p>示例代码</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/vul"</span><span class="token punctuation">)</span>
-<span class="token keyword">public</span> String <span class="token function">jdbc_sqli_sec</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span><span class="token string">"id"</span><span class="token punctuation">)</span> String id<span class="token punctuation">)</span> <span class="token keyword">throws</span> SQLException<span class="token punctuation">{</span>
-    StringBuilder result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    Class<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span>driver<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    Connection connect <span class="token operator">=</span> DriverManager<span class="token punctuation">.</span><span class="token function">getConnection</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> user<span class="token punctuation">,</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    String sql <span class="token operator">=</span> <span class="token string">"select * from users"</span><span class="token operator">+</span><span class="token string">"order by"</span><span class="token operator">+</span>id<span class="token punctuation">;</span>
-    PreparedStatement st <span class="token operator">=</span> con<span class="token punctuation">.</span><span class="token function">prepareStatement</span><span class="token punctuation">(</span>sql<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    ResultSet rs <span class="token operator">=</span> st<span class="token punctuation">.</span><span class="token function">executeQuery</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>rs<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        String res_name <span class="token operator">=</span> rs<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token string">"username"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String res_pwd <span class="token operator">=</span> rs<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token string">"password"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String info <span class="token operator">=</span> String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"%s: %s\n"</span><span class="token punctuation">,</span> res_name<span class="token punctuation">,</span> res_pwd<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        result<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>info<span class="token punctuation">)</span><span class="token punctuation">;</span>
+&#125;</code></pre>
+<p>以上代码我们通过getInputStream()读取进程的输入流，再通过InputStreamReader读取字节，进而获取命令执行的结果。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011234213329.png"></p>
+<h3 id="2、FileInputStream"><a href="#2、FileInputStream" class="headerlink" title="2、FileInputStream"></a>2、FileInputStream</h3><p>FileInputStream继承了InputStream类，用于读取文件，我们直接看看它的用法，示例代码如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileInputStream<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileRead</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        FileInputStream fs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span><span class="token string">"D:\\2.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bytes<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> len <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//从该输入流读取最多 bytes.length个字节的数据为字节数组。</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">String</span><span class="token punctuation">(</span>bytes<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span>len<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
     <span class="token punctuation">}</span>
-    rs<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    connect<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="0x05-和-的区别"><a href="#0x05-和-的区别" class="headerlink" title="0x05 #{}和${}的区别"></a>0x05 #{}和${}的区别</h2><p>在MyBatis中，#{}在底层实现上使用”?”作为占位符来生成prepareStatement，也是参数化查询预编译的机制，而${}将传入的数据直接显示在SQL语句中，类似于字符串拼接，可能会导致SQL注入。</p>
-<pre><code>SELECT * FROM user WHERE id=#&#123;id&#125;  //安全的写法
-SELECT * FROM user WHERE id=$&#123;id&#125;  //不安全的写法</code></pre>
-<p>示例代码，在”userMapprt.xml”定义SQL映射文件中设置的是”${id}”不安全写法</p>
-<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>mapper</span> <span class="token attr-name">namespace</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.mybatis.userMapper<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>getUser<span class="token punctuation">"</span></span> <span class="token attr-name">resultType</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.mybatis.sql.User<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        select * from user where id=${id}
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>select</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>mapper</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="0x06-Mybatis–常见SQL注入分析"><a href="#0x06-Mybatis–常见SQL注入分析" class="headerlink" title="0x06 Mybatis–常见SQL注入分析"></a>0x06 Mybatis–常见SQL注入分析</h2><p>1)、order by 查询</p>
-<p>order by不能使用参数化查询的方式，只能使用字符拼接的方式，而在Mybatis中#{}是进行参数化查询的，要使用order by只能使用${}，如果开发者没有对此进行关键字过滤，则会导致SQL注入的产生。</p>
-<pre><code>&lt;mapper namespace=&quot;org.joychou.mapper.UserMapper&quot;&gt;
-    &lt;select id=&quot;OrderByUsername&quot; resultMap=&quot;User&quot;&gt;
-        select * from users order by $&#123;id&#125;
-    &lt;/select&gt;    
-&lt;/mapper&gt;</code></pre>
-<p>2)、like查询</p>
-<p>Mybatis的like子句中使用#{}会报错，为了避免报错，只能使用${}，例如</p>
-<pre><code>select * from users where name like &#39;%$&#123;user&#125;%&#39;;</code></pre>
-<p>但${}会产生SQL注入，要避免SQL注入就要设置filter对其参数进行过滤。漏洞代码如下</p>
-<pre><code>&lt;mapper namespace=&quot;org.joychou.mapper.UserMapper&quot;&gt;
-    &lt;select id=&quot;findByUserNameVuln02&quot; parameterType=&quot;String&quot; resultMap=&quot;User&quot;&gt;
-        select * from users where username like &#39;%$&#123;_parameter&#125;%&#39;
-    &lt;/select&gt;
-&lt;/mapper&gt;</code></pre>
-<p>3)、in参数</p>
-<p>​    在Mybatis的in子句中使用#{}会将多个参数当作一个整体，示例代码如下</p>
-<pre><code>&lt;mapper namespace=&quot;org.joychou.mapper.UserMapper&quot;&gt;
-    &lt;select id=&quot;findByUserNameVuln02&quot; parameterType=&quot;String&quot; resultMap=&quot;User&quot;&gt;
-        select * from users where username in (#&#123;user&#125;)
-    &lt;/select&gt;
-&lt;/mapper&gt;</code></pre>
-<p>在Mybatis的in子句中使用#{}参数化查询，会将“select * from users where username in (#{user})”转变成</p>
-<p>“select * from users where username like (“‘user1’,’user2’,’user4’”)”，这样把”‘user1’,’user2’,’user4’”当成一个整体，无法查询到数据，为了避免这个问题，只能使用${}，而${}会进行字符拼接，如果没有经过任何过滤，则会导致SQL注入。</p>
-<p>4)、总结</p>
-<pre><code>1、Mybatis框架下审计SQL注入，重点关注在三个方面like，in和order by 
-2、xml方式编写sql时，可以先筛选xml文件搜索$,逐个分析，要特别注意mybatis-generator的order by注入 
-3、Mybatis注解编写sql时方法类似 
-4、java层面应该做好参数检查，假定用户输入均为恶意输入，防范潜在的攻击</code></pre>
-<h2 id="0x07-SQL注入代码审计总结"><a href="#0x07-SQL注入代码审计总结" class="headerlink" title="0x07 SQL注入代码审计总结"></a>0x07 SQL注入代码审计总结</h2><p>总结了下面几种常见的关键字，我们可以通过这些关键字快速定位到SQL语句</p>
-<pre><code>Statement
-createStatement
-PrepareStatement
-like &#39;%$&#123;
-in($&#123;
-select
-update
-insert</code></pre>
-<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221011235849280.png"></p>
+<h3 id="3、FileOutputStream"><a href="#3、FileOutputStream" class="headerlink" title="3、FileOutputStream"></a>3、FileOutputStream</h3><p>FileOutputStream继承了OutputStream类，用于写入文件。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>File<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileOutputStream<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>charset<span class="token punctuation">.</span>StandardCharsets<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileOutput</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"3.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        FileOutputStream fs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String content <span class="token operator">=</span> <span class="token string">"abcv"</span><span class="token punctuation">;</span>
+        fs<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>content<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"写入成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>write()从偏移量off开始的指定字节数组中的len个字节写入输出流中。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>File<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileOutputStream<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>nio<span class="token punctuation">.</span>charset<span class="token punctuation">.</span>StandardCharsets<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileOutput</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"4.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        FileOutputStream fs <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String content <span class="token operator">=</span> <span class="token string">"abcv"</span><span class="token punctuation">;</span>
+        fs<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>content<span class="token punctuation">.</span><span class="token function">getBytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//表示写入从下标1到3的字节，即写入bcv到4.txt中</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"写入成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fs<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4、FileReader"><a href="#4、FileReader" class="headerlink" title="4、FileReader"></a>4、FileReader</h3><p>FileReader类从InputStreamReader类继承而来。该类按字符读取流中数据。它与FileInputStream区别在于FileInputStream提供的是字节流的读取，而非文本读取，这是和FileReader类的根本区别。用FileReader读取出来的是char数组或者String ，使用FileInputStream读取出来的是byte数组。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>File<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileReader<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileReads</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+        File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span><span class="token string">"4.txt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        FileReader fr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileReader</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">char</span><span class="token punctuation">[</span><span class="token punctuation">]</span> a <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">char</span><span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        fr<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">char</span> c <span class="token operator">:</span> a<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        fr<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012002037878.png"></p>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>关于IO流还有很多数据操作，后面有时间再逐一看看。</p>
+
                 
             </div>
             <hr/>
@@ -598,7 +591,7 @@ insert</code></pre>
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/11/dai-ma-shen-ji-zhi-sql-zhu-ru/">http://example.com/2022/10/11/dai-ma-shen-ji-zhi-sql-zhu-ru/</a>
+                    <a href="http://example.com/2022/10/11/java-zhi-io-liu/">http://example.com/2022/10/11/java-zhi-io-liu/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -636,8 +629,8 @@ insert</code></pre>
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                                    <span class="chip bg-color">代码审计</span>
+                                <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                                    <span class="chip bg-color">编程</span>
                                 </a>
                             
                         </div>
@@ -807,9 +800,10 @@ insert</code></pre>
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/10/11/java-zhi-io-liu/">
                     <div class="card-image">
@@ -827,9 +821,9 @@ insert</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-11
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-11
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -842,6 +836,7 @@ insert</code></pre>
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -860,13 +855,13 @@ insert</code></pre>
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/10/10/filter-quan-xian-rao-guo-zong-jie/">
+                <a href="/2022/10/11/dai-ma-shen-ji-zhi-sql-zhu-ru/">
                     <div class="card-image">
                         
                         
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/02.jpg" class="responsive-img" alt="Filter权限绕过总结">
+                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/15.jpg" class="responsive-img" alt="代码审计之SQL注入">
                         
-                        <span class="card-title">Filter权限绕过总结</span>
+                        <span class="card-title">代码审计之SQL注入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -877,7 +872,7 @@ insert</code></pre>
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-10
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-11
                             </span>
                         <span class="publish-author">
                             
