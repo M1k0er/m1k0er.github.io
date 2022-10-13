@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="畅捷通js敏感接口登录后台, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="代码审计之任意文件上传, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>畅捷通js敏感接口登录后台 | m1k0er&#39;Blogs</title>
+    <title>代码审计之任意文件上传 | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E6%8F%92%E7%94%BB/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">畅捷通js敏感接口登录后台</h1>
+                    <h1 class="description center-align post-title">代码审计之任意文件上传</h1>
                 </div>
             </div>
         </div>
@@ -411,8 +411,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">代码审计</span>
                             </a>
                         
                     </div>
@@ -423,8 +423,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                代码审计
                             </a>
                         
                     </div>
@@ -457,26 +457,166 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>这个系统早期的时候在做攻防演练时遇到的，当时觉得挺有意思便顺手记下了挖掘这个漏洞的过程。</p>
-<h2 id="0x01-漏洞过程"><a href="#0x01-漏洞过程" class="headerlink" title="0x01 漏洞过程"></a>0x01 漏洞过程</h2><p>漏洞地址是：<code>http://xxx.com</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023936290.png"></p>
-<p>发现系统管理员账户无法访问。Google 相关漏洞，只能找到这一篇：<code>https://www.anquanke.com/post/id/195226</code>里面提到了几个漏洞：</p>
-<p>1、任意文件上传（利用时间竞争）</p>
-<p>2、管理员密码任意重置漏洞</p>
-<p>3、SQL注入漏洞</p>
-<p>4、接口未授权漏洞</p>
-<p>5、任意文件下载漏洞经过分析，第一个漏洞已经无法使用，访问该目录全都返回200，然后提示无法执行：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023452914.png"></p>
-<p>然后仔细看了下页面html代码，发现了这一段：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023546638.png"></p>
-<p>尝试构造新的url直接访问：<code>http://xxx.com/tplus/view/login.html?fromApp=b2b&amp;acc=1&amp;role=demo&amp;industry=edu</code>提示：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023701912.png"></p>
-<p>虽然提示获取演示账号失败，但是！！发现系统管理员页签可以使用了！！！接着按照文档里面的说法，来重置管理员密码。首先访问重置密码页面：<code>http://xxx.com/tplus/RecoverPassword.aspx</code>在源码中获取到真正的重置页面：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023752330.png"></p>
-<p>然后直接构造ajax请求，发送数据包：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023832103.png"></p>
-<p>Bingo！密码重置成功，直接登录到后台：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023900292.png"></p>
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>Time and tide wait for no man.</p>
+<h2 id="0x01-概念"><a href="#0x01-概念" class="headerlink" title="0x01 概念"></a>0x01 概念</h2><p>任意文件上传漏洞的本质是在进行文件上传操作时未对文件类型进行检测或者检测功能不规范导致被绕过，从而使攻击者上传的可执行脚本(WEBSHELL)被上传至服务器并成功解析。</p>
+<h2 id="0x02-java常见文件上传方式"><a href="#0x02-java常见文件上传方式" class="headerlink" title="0x02 java常见文件上传方式"></a>0x02 java常见文件上传方式</h2><p>在java开发中，文件上传的方式有多种，我们主要讲下以下三种最为常用的。</p>
+<ul>
+<li>通过文件流的方式</li>
+<li>通过ServletFileUpload</li>
+<li>通过MultipartFile</li>
+</ul>
+<p>我们逐步对这三种方式起个Demo，来加深了解它们上传的方式是怎么样的。</p>
+<h3 id="1、MultipartFile"><a href="#1、MultipartFile" class="headerlink" title="1、MultipartFile"></a>1、MultipartFile</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/upload"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">upload</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"file"</span><span class="token punctuation">,</span>required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> MultipartFile file<span class="token punctuation">,</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+    String fileName <span class="token operator">=</span> file<span class="token punctuation">.</span><span class="token function">getOriginalFilename</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"上传的文件名："</span> <span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String filePath <span class="token operator">=</span> <span class="token string">"E:\\"</span><span class="token punctuation">;</span>
+    InputStream inputStream <span class="token operator">=</span> file<span class="token punctuation">.</span><span class="token function">getInputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    FileOutputStream fileOutputStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>filePath <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>len <span class="token operator">=</span> inputStream<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        fileOutputStream<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fileOutputStream<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    fileOutputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    inputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token string">"success"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2、ServletFileUpload"><a href="#2、ServletFileUpload" class="headerlink" title="2、ServletFileUpload"></a>2、ServletFileUpload</h3><pre><code>import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
+
+public class FileServlet extends HttpServlet &#123;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException &#123;
+
+        //判断上传的文件是普通表单还是带文件的表单
+        if (!ServletFileUpload.isMultipartContent(request)) &#123;
+            return;//终止方法运行，说明这是一个普通表单 直接返回
+        &#125;
+
+        //创建上传文件的保存路径 建议在WEB-INF下 安全 用户无法直接访问上传的文件
+        String uploadPath = this.getServletContext().getRealPath(&quot;/WEB-INF/upload&quot;);
+        File uploadFile = new File(uploadPath);
+        if (!uploadFile.exists()) &#123;
+            //如果目录不存在 则创建目录
+            uploadFile.mkdir();
+        &#125;
+        //缓存 临时文件
+        // 临时路径 假如文件超过了预期的大小，我们就把他放入一个临时文件中，过几天自动删除，或者提醒用户转存为永久
+        // 例如qq上传大文件 只会让你存放几天时间
+        String tempPath = this.getServletContext().getRealPath(&quot;/WEB-INF/temp&quot;);
+        File tempFile = new File(tempPath);
+        if (!tempFile.exists()) &#123;
+            tempFile.mkdir();//如果不存在 创建
+        &#125;
+
+        //ServletFileupload负责处理上传的文件数据，并将表单中每个输入项封装成一个FileItem对象
+        //在使用ServletFileUpload对象解析请求时 需要DiskFileItemFactory对象
+        //所以我们需要 先构造 DiskFileItemFactory对象
+        //再通过ServletFileupload对象的构造方法或setFileItemFactory()方法设置ServletFileUpload对象的fileItemFactory属性
+
+        try &#123;
+            //1.创建DiskFileItemFactory对象，处理文件上传路径或者大小限制
+            DiskFileItemFactory factory = getDiskFileItemFactory(uploadFile);
+            //2.获取ServletFileUpload对象
+            ServletFileUpload servletFileUpload = getServletFileUpload(factory);
+            //3.处理上传的文件
+            String msg = uploadParseRequest(servletFileUpload, request, uploadPath);
+            request.setAttribute(&quot;msg&quot;, msg);
+            request.getRequestDispatcher(&quot;result.jsp&quot;).forward(request, response);
+        &#125; catch (FileUploadException | ServletException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException &#123;
+
+    &#125;
+
+    public static DiskFileItemFactory getDiskFileItemFactory(File file) &#123;
+        //1.创建一个DiskFileItemFactory对象  用于处理文件上传路径及大小限制
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        //通过工厂设置缓冲区 当上传的文件大于缓冲区时 把文件放置临时目录
+        factory.setSizeThreshold(1024 * 1024);    //缓冲区大小
+        factory.setRepository(file);    //临时文件的保存目录
+        return factory;
+    &#125;
+
+    public static ServletFileUpload getServletFileUpload(DiskFileItemFactory factory) &#123;
+        //2.获取ServletFileUpload
+        ServletFileUpload servletFileUpload = new ServletFileUpload(factory);
+        //上传进度
+        servletFileUpload.setProgressListener(new ProgressListener() &#123;
+            @Override
+            public void update(long RreadSize, long AllSize, int i) &#123;
+                //      System.out.println(&quot;总大小：&quot;+AllSize+&quot;kb\t已上传：&quot;+RreadSize+&quot;kb&quot;);
+
+                //      System.out.println(&quot;总大小：&quot;+AllSize+&quot;kb\t已上传：&quot;+((int)(RreadSize*10000.0/AllSize))*1.0/100+&quot;%&quot;);
+
+                BigDecimal bd = new BigDecimal(String.valueOf(RreadSize * 100 / AllSize));
+                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+                System.out.println(&quot;总大小：&quot; + AllSize + &quot;kb\t已上传：&quot; + bd + &quot;%&quot;);
+            &#125;
+        &#125;);
+        //处理乱码
+        servletFileUpload.setHeaderEncoding(&quot;utf8&quot;);
+        //设置单个文件的最大值
+        servletFileUpload.setFileSizeMax(1024 * 1024 * 10);
+        //设置总共能上传文件的大小 1024 = 1kb -&gt;  1024*1024 = 1m -&gt; 1m*10 = 10m
+        servletFileUpload.setSizeMax(1024 * 1024 * 10);
+        return servletFileUpload;
+    &#125;</code></pre>
+<h3 id="3、文件流"><a href="#3、文件流" class="headerlink" title="3、文件流"></a>3、文件流</h3><pre><code>@RequestMapping(&quot;/upload&quot;)
+public String upload(@RequestParam(value = &quot;file&quot;,required = false) CommonsMultipartFile file) throws IOException &#123;
+    String fileName = file.getOriginalFilename();
+    System.out.println(&quot;上传的文件名：&quot; + fileName);
+    String filePath = &quot;E:\\&quot;;
+    InputStream inputStream = file.getInputStream();
+    FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath + &quot;/&quot; + fileName));
+    byte[] buffer = new byte[1024];
+    int len = 0;
+    while ((len = inputStream.read(buffer)) != -1) &#123;
+        fileOutputStream.write(buffer,0, len);
+        fileOutputStream.flush();
+    &#125;
+    fileOutputStream.close();
+    inputStream.close();
+    return &quot;success&quot;;
+&#125;</code></pre>
+<p>除了以上三种上传方式，java中还有很多其他类似的文件上传方式，这里不一一举例了。</p>
+<h2 id="0x03-审计技巧"><a href="#0x03-审计技巧" class="headerlink" title="0x03 审计技巧"></a>0x03 审计技巧</h2><p>当我们拿到一套源码时，主要通过以下几点来分析是否存在任意文件上传漏洞</p>
+<ol>
+<li> 程序是白名单还是黑名单校验后缀。</li>
+<li> 是否校验文件上传的后缀，这里还有个细节需要提一下，程序员经常使用<code>suffix=fileName.substring(filename.indexOf(&quot;.&quot;))</code>来获取上传文件的后缀名，如果攻击者上传的文件名为shell.jpg.jsp。这个时候suffix为<code>.jpg.php</code>，这个时候肯定不在黑名单内，修复的方式也很简单，IndexOf()替换成 lastIndexOf()。</li>
+<li>文件后缀对比， <code>string.equals(fileSuffix)</code>函数不区分大小写。这时可通过 string.Jsp 这种方式绕过。修复方案：在 比较之前使用 <code>fileSuffix.toLowerCase() </code>将前端取得的后缀名变换成小写或者改成 <code>s.equalsIgnoreCase(fileSuffix)</code> 即忽略大小 </li>
+<li>系统是否通过文件类型来校验<code> String contentType = file.getContentType()</code>; 这种方式可以前端修改文件类型绕过上传 </li>
+<li>java 程序中涉及到文件上传的函数，比如：<code>MultipartFile</code></li>
+<li>模糊搜索相关文件上传类或者函数，比如</li>
+</ol>
+<pre><code>File
+FileUpload
+FileUtils
+UploadHandleServlet
+FileLoadServlet
+getInputStream
+FileOutputStream
+DiskFileItemFactory
+MultipartRequestEntity</code></pre>
 
                 
             </div>
@@ -503,7 +643,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/</a>
+                    <a href="http://example.com/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/">http://example.com/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -541,8 +681,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
+                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">代码审计</span>
                                 </a>
                             
                         </div>
@@ -712,9 +852,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/">
                     <div class="card-image">
@@ -732,9 +873,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -747,6 +888,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -765,13 +907,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/10/12/sprintboot-shiro-zheng-he/">
+                <a href="/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="畅捷通js敏感接口登录后台">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">畅捷通js敏感接口登录后台</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -786,11 +928,23 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            m1k0er
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    渗透测试
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">渗透测试</span>
+                    </a>
+                    
                 </div>
                 
             </div>

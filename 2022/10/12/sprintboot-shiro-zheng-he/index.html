@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="畅捷通js敏感接口登录后台, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>畅捷通js敏感接口登录后台 | m1k0er&#39;Blogs</title>
+    <title>m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">畅捷通js敏感接口登录后台</h1>
+                    <h1 class="description center-align post-title"></h1>
                 </div>
             </div>
         </div>
@@ -409,25 +409,12 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
-                    
-                    <div class="post-cate">
-                        <i class="fas fa-bookmark fa-fw icon-category"></i>
-                        
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
-                            </a>
-                        
-                    </div>
                     
                 </div>
             </div>
@@ -457,27 +444,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>这个系统早期的时候在做攻防演练时遇到的，当时觉得挺有意思便顺手记下了挖掘这个漏洞的过程。</p>
-<h2 id="0x01-漏洞过程"><a href="#0x01-漏洞过程" class="headerlink" title="0x01 漏洞过程"></a>0x01 漏洞过程</h2><p>漏洞地址是：<code>http://xxx.com</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023936290.png"></p>
-<p>发现系统管理员账户无法访问。Google 相关漏洞，只能找到这一篇：<code>https://www.anquanke.com/post/id/195226</code>里面提到了几个漏洞：</p>
-<p>1、任意文件上传（利用时间竞争）</p>
-<p>2、管理员密码任意重置漏洞</p>
-<p>3、SQL注入漏洞</p>
-<p>4、接口未授权漏洞</p>
-<p>5、任意文件下载漏洞经过分析，第一个漏洞已经无法使用，访问该目录全都返回200，然后提示无法执行：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023452914.png"></p>
-<p>然后仔细看了下页面html代码，发现了这一段：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023546638.png"></p>
-<p>尝试构造新的url直接访问：<code>http://xxx.com/tplus/view/login.html?fromApp=b2b&amp;acc=1&amp;role=demo&amp;industry=edu</code>提示：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023701912.png"></p>
-<p>虽然提示获取演示账号失败，但是！！发现系统管理员页签可以使用了！！！接着按照文档里面的说法，来重置管理员密码。首先访问重置密码页面：<code>http://xxx.com/tplus/RecoverPassword.aspx</code>在源码中获取到真正的重置页面：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023752330.png"></p>
-<p>然后直接构造ajax请求，发送数据包：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023832103.png"></p>
-<p>Bingo！密码重置成功，直接登录到后台：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023900292.png"></p>
-
+                
                 
             </div>
             <hr/>
@@ -503,7 +470,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/</a>
+                    <a href="http://example.com/2022/10/12/sprintboot-shiro-zheng-he/">http://example.com/2022/10/12/sprintboot-shiro-zheng-he/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -540,11 +507,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -716,13 +679,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/">
+                <a href="/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">
                     <div class="card-image">
                         
                         
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E6%8F%92%E7%94%BB/11.jpg" class="responsive-img" alt="代码审计之任意文件上传">
+                        <img src="/medias/featureimages/11.jpg" class="responsive-img" alt="畅捷通js敏感接口登录后台">
                         
-                        <span class="card-title">代码审计之任意文件上传</span>
+                        <span class="card-title">畅捷通js敏感接口登录后台</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -739,8 +702,8 @@
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
-                                    代码审计
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    渗透测试
                                 </a>
                             
                             
@@ -750,8 +713,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                        <span class="chip bg-color">代码审计</span>
+                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">渗透测试</span>
                     </a>
                     
                 </div>
@@ -765,13 +728,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/10/12/sprintboot-shiro-zheng-he/">
+                <a href="/2022/10/11/java-zhi-io-liu/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="java之IO流">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">java之IO流</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -782,15 +745,27 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-11
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            m1k0er
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BC%96%E7%A8%8B/" class="post-category">
+                                    编程
+                                </a>
+                            
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                        <span class="chip bg-color">编程</span>
+                    </a>
+                    
                 </div>
                 
             </div>
