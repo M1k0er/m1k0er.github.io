@@ -483,121 +483,121 @@
     inputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> <span class="token string">"success"</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2、ServletFileUpload"><a href="#2、ServletFileUpload" class="headerlink" title="2、ServletFileUpload"></a>2、ServletFileUpload</h3><pre><code>import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.ProgressListener;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+<h3 id="2、ServletFileUpload"><a href="#2、ServletFileUpload" class="headerlink" title="2、ServletFileUpload"></a>2、ServletFileUpload</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>fileupload<span class="token punctuation">.</span>FileItem<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>fileupload<span class="token punctuation">.</span>FileUploadException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>fileupload<span class="token punctuation">.</span>ProgressListener<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>fileupload<span class="token punctuation">.</span>disk<span class="token punctuation">.</span>DiskFileItemFactory<span class="token punctuation">;</span>
+<span class="token keyword">import</span> org<span class="token punctuation">.</span>apache<span class="token punctuation">.</span>commons<span class="token punctuation">.</span>fileupload<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>ServletFileUpload<span class="token punctuation">;</span>
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
+<span class="token keyword">import</span> javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>ServletException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>http<span class="token punctuation">.</span>HttpServlet<span class="token punctuation">;</span>
+<span class="token keyword">import</span> javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>http<span class="token punctuation">.</span>HttpServletRequest<span class="token punctuation">;</span>
+<span class="token keyword">import</span> javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>http<span class="token punctuation">.</span>HttpServletResponse<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>File<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>FileOutputStream<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>IOException<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>InputStream<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>math<span class="token punctuation">.</span>BigDecimal<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>List<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>UUID<span class="token punctuation">;</span>
 
-public class FileServlet extends HttpServlet &#123;
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException &#123;
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FileServlet</span> <span class="token keyword">extends</span> <span class="token class-name">HttpServlet</span> <span class="token punctuation">{</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doPost</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">,</span> HttpServletResponse response<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
 
-        //判断上传的文件是普通表单还是带文件的表单
-        if (!ServletFileUpload.isMultipartContent(request)) &#123;
-            return;//终止方法运行，说明这是一个普通表单 直接返回
-        &#125;
+        <span class="token comment" spellcheck="true">//判断上传的文件是普通表单还是带文件的表单</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ServletFileUpload<span class="token punctuation">.</span><span class="token function">isMultipartContent</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//终止方法运行，说明这是一个普通表单 直接返回</span>
+        <span class="token punctuation">}</span>
 
-        //创建上传文件的保存路径 建议在WEB-INF下 安全 用户无法直接访问上传的文件
-        String uploadPath = this.getServletContext().getRealPath(&quot;/WEB-INF/upload&quot;);
-        File uploadFile = new File(uploadPath);
-        if (!uploadFile.exists()) &#123;
-            //如果目录不存在 则创建目录
-            uploadFile.mkdir();
-        &#125;
-        //缓存 临时文件
-        // 临时路径 假如文件超过了预期的大小，我们就把他放入一个临时文件中，过几天自动删除，或者提醒用户转存为永久
-        // 例如qq上传大文件 只会让你存放几天时间
-        String tempPath = this.getServletContext().getRealPath(&quot;/WEB-INF/temp&quot;);
-        File tempFile = new File(tempPath);
-        if (!tempFile.exists()) &#123;
-            tempFile.mkdir();//如果不存在 创建
-        &#125;
+        <span class="token comment" spellcheck="true">//创建上传文件的保存路径 建议在WEB-INF下 安全 用户无法直接访问上传的文件</span>
+        String uploadPath <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getServletContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRealPath</span><span class="token punctuation">(</span><span class="token string">"/WEB-INF/upload"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        File uploadFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>uploadPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>uploadFile<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//如果目录不存在 则创建目录</span>
+            uploadFile<span class="token punctuation">.</span><span class="token function">mkdir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">//缓存 临时文件</span>
+        <span class="token comment" spellcheck="true">// 临时路径 假如文件超过了预期的大小，我们就把他放入一个临时文件中，过几天自动删除，或者提醒用户转存为永久</span>
+        <span class="token comment" spellcheck="true">// 例如qq上传大文件 只会让你存放几天时间</span>
+        String tempPath <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getServletContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRealPath</span><span class="token punctuation">(</span><span class="token string">"/WEB-INF/temp"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        File tempFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>tempPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>tempFile<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            tempFile<span class="token punctuation">.</span><span class="token function">mkdir</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//如果不存在 创建</span>
+        <span class="token punctuation">}</span>
 
-        //ServletFileupload负责处理上传的文件数据，并将表单中每个输入项封装成一个FileItem对象
-        //在使用ServletFileUpload对象解析请求时 需要DiskFileItemFactory对象
-        //所以我们需要 先构造 DiskFileItemFactory对象
-        //再通过ServletFileupload对象的构造方法或setFileItemFactory()方法设置ServletFileUpload对象的fileItemFactory属性
+        <span class="token comment" spellcheck="true">//ServletFileupload负责处理上传的文件数据，并将表单中每个输入项封装成一个FileItem对象</span>
+        <span class="token comment" spellcheck="true">//在使用ServletFileUpload对象解析请求时 需要DiskFileItemFactory对象</span>
+        <span class="token comment" spellcheck="true">//所以我们需要 先构造 DiskFileItemFactory对象</span>
+        <span class="token comment" spellcheck="true">//再通过ServletFileupload对象的构造方法或setFileItemFactory()方法设置ServletFileUpload对象的fileItemFactory属性</span>
 
-        try &#123;
-            //1.创建DiskFileItemFactory对象，处理文件上传路径或者大小限制
-            DiskFileItemFactory factory = getDiskFileItemFactory(uploadFile);
-            //2.获取ServletFileUpload对象
-            ServletFileUpload servletFileUpload = getServletFileUpload(factory);
-            //3.处理上传的文件
-            String msg = uploadParseRequest(servletFileUpload, request, uploadPath);
-            request.setAttribute(&quot;msg&quot;, msg);
-            request.getRequestDispatcher(&quot;result.jsp&quot;).forward(request, response);
-        &#125; catch (FileUploadException | ServletException e) &#123;
-            e.printStackTrace();
-        &#125;
-    &#125;
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//1.创建DiskFileItemFactory对象，处理文件上传路径或者大小限制</span>
+            DiskFileItemFactory factory <span class="token operator">=</span> <span class="token function">getDiskFileItemFactory</span><span class="token punctuation">(</span>uploadFile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//2.获取ServletFileUpload对象</span>
+            ServletFileUpload servletFileUpload <span class="token operator">=</span> <span class="token function">getServletFileUpload</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//3.处理上传的文件</span>
+            String msg <span class="token operator">=</span> <span class="token function">uploadParseRequest</span><span class="token punctuation">(</span>servletFileUpload<span class="token punctuation">,</span> request<span class="token punctuation">,</span> uploadPath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            request<span class="token punctuation">.</span><span class="token function">setAttribute</span><span class="token punctuation">(</span><span class="token string">"msg"</span><span class="token punctuation">,</span> msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            request<span class="token punctuation">.</span><span class="token function">getRequestDispatcher</span><span class="token punctuation">(</span><span class="token string">"result.jsp"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forward</span><span class="token punctuation">(</span>request<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">FileUploadException</span> <span class="token operator">|</span> ServletException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException &#123;
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">doGet</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">,</span> HttpServletResponse response<span class="token punctuation">)</span> <span class="token keyword">throws</span> javax<span class="token punctuation">.</span>servlet<span class="token punctuation">.</span>ServletException<span class="token punctuation">,</span> IOException <span class="token punctuation">{</span>
 
-    &#125;
+    <span class="token punctuation">}</span>
 
-    public static DiskFileItemFactory getDiskFileItemFactory(File file) &#123;
-        //1.创建一个DiskFileItemFactory对象  用于处理文件上传路径及大小限制
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        //通过工厂设置缓冲区 当上传的文件大于缓冲区时 把文件放置临时目录
-        factory.setSizeThreshold(1024 * 1024);    //缓冲区大小
-        factory.setRepository(file);    //临时文件的保存目录
-        return factory;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">static</span> DiskFileItemFactory <span class="token function">getDiskFileItemFactory</span><span class="token punctuation">(</span>File file<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//1.创建一个DiskFileItemFactory对象  用于处理文件上传路径及大小限制</span>
+        DiskFileItemFactory factory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DiskFileItemFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//通过工厂设置缓冲区 当上传的文件大于缓冲区时 把文件放置临时目录</span>
+        factory<span class="token punctuation">.</span><span class="token function">setSizeThreshold</span><span class="token punctuation">(</span><span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//缓冲区大小</span>
+        factory<span class="token punctuation">.</span><span class="token function">setRepository</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//临时文件的保存目录</span>
+        <span class="token keyword">return</span> factory<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    public static ServletFileUpload getServletFileUpload(DiskFileItemFactory factory) &#123;
-        //2.获取ServletFileUpload
-        ServletFileUpload servletFileUpload = new ServletFileUpload(factory);
-        //上传进度
-        servletFileUpload.setProgressListener(new ProgressListener() &#123;
-            @Override
-            public void update(long RreadSize, long AllSize, int i) &#123;
-                //      System.out.println(&quot;总大小：&quot;+AllSize+&quot;kb\t已上传：&quot;+RreadSize+&quot;kb&quot;);
+    <span class="token keyword">public</span> <span class="token keyword">static</span> ServletFileUpload <span class="token function">getServletFileUpload</span><span class="token punctuation">(</span>DiskFileItemFactory factory<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//2.获取ServletFileUpload</span>
+        ServletFileUpload servletFileUpload <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ServletFileUpload</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//上传进度</span>
+        servletFileUpload<span class="token punctuation">.</span><span class="token function">setProgressListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ProgressListener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">update</span><span class="token punctuation">(</span><span class="token keyword">long</span> RreadSize<span class="token punctuation">,</span> <span class="token keyword">long</span> AllSize<span class="token punctuation">,</span> <span class="token keyword">int</span> i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">//      System.out.println("总大小："+AllSize+"kb\t已上传："+RreadSize+"kb");</span>
 
-                //      System.out.println(&quot;总大小：&quot;+AllSize+&quot;kb\t已上传：&quot;+((int)(RreadSize*10000.0/AllSize))*1.0/100+&quot;%&quot;);
+                <span class="token comment" spellcheck="true">//      System.out.println("总大小："+AllSize+"kb\t已上传："+((int)(RreadSize*10000.0/AllSize))*1.0/100+"%");</span>
 
-                BigDecimal bd = new BigDecimal(String.valueOf(RreadSize * 100 / AllSize));
-                bd = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
-                System.out.println(&quot;总大小：&quot; + AllSize + &quot;kb\t已上传：&quot; + bd + &quot;%&quot;);
-            &#125;
-        &#125;);
-        //处理乱码
-        servletFileUpload.setHeaderEncoding(&quot;utf8&quot;);
-        //设置单个文件的最大值
-        servletFileUpload.setFileSizeMax(1024 * 1024 * 10);
-        //设置总共能上传文件的大小 1024 = 1kb -&gt;  1024*1024 = 1m -&gt; 1m*10 = 10m
-        servletFileUpload.setSizeMax(1024 * 1024 * 10);
-        return servletFileUpload;
-    &#125;</code></pre>
-<h3 id="3、文件流"><a href="#3、文件流" class="headerlink" title="3、文件流"></a>3、文件流</h3><pre><code>@RequestMapping(&quot;/upload&quot;)
-public String upload(@RequestParam(value = &quot;file&quot;,required = false) CommonsMultipartFile file) throws IOException &#123;
-    String fileName = file.getOriginalFilename();
-    System.out.println(&quot;上传的文件名：&quot; + fileName);
-    String filePath = &quot;E:\\&quot;;
-    InputStream inputStream = file.getInputStream();
-    FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath + &quot;/&quot; + fileName));
-    byte[] buffer = new byte[1024];
-    int len = 0;
-    while ((len = inputStream.read(buffer)) != -1) &#123;
-        fileOutputStream.write(buffer,0, len);
-        fileOutputStream.flush();
-    &#125;
-    fileOutputStream.close();
-    inputStream.close();
-    return &quot;success&quot;;
-&#125;</code></pre>
+                BigDecimal bd <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BigDecimal</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>RreadSize <span class="token operator">*</span> <span class="token number">100</span> <span class="token operator">/</span> AllSize<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                bd <span class="token operator">=</span> bd<span class="token punctuation">.</span><span class="token function">setScale</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> BigDecimal<span class="token punctuation">.</span>ROUND_HALF_UP<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"总大小："</span> <span class="token operator">+</span> AllSize <span class="token operator">+</span> <span class="token string">"kb\t已上传："</span> <span class="token operator">+</span> bd <span class="token operator">+</span> <span class="token string">"%"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//处理乱码</span>
+        servletFileUpload<span class="token punctuation">.</span><span class="token function">setHeaderEncoding</span><span class="token punctuation">(</span><span class="token string">"utf8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//设置单个文件的最大值</span>
+        servletFileUpload<span class="token punctuation">.</span><span class="token function">setFileSizeMax</span><span class="token punctuation">(</span><span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//设置总共能上传文件的大小 1024 = 1kb ->  1024*1024 = 1m -> 1m*10 = 10m</span>
+        servletFileUpload<span class="token punctuation">.</span><span class="token function">setSizeMax</span><span class="token punctuation">(</span><span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> servletFileUpload<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3、文件流"><a href="#3、文件流" class="headerlink" title="3、文件流"></a>3、文件流</h3><pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span><span class="token string">"/upload"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">upload</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"file"</span><span class="token punctuation">,</span>required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span> CommonsMultipartFile file<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+    String fileName <span class="token operator">=</span> file<span class="token punctuation">.</span><span class="token function">getOriginalFilename</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"上传的文件名："</span> <span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String filePath <span class="token operator">=</span> <span class="token string">"E:\\"</span><span class="token punctuation">;</span>
+    InputStream inputStream <span class="token operator">=</span> file<span class="token punctuation">.</span><span class="token function">getInputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    FileOutputStream fileOutputStream <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileOutputStream</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>filePath <span class="token operator">+</span> <span class="token string">"/"</span> <span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> buffer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>len <span class="token operator">=</span> inputStream<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        fileOutputStream<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>buffer<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fileOutputStream<span class="token punctuation">.</span><span class="token function">flush</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    fileOutputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    inputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token string">"success"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>除了以上三种上传方式，java中还有很多其他类似的文件上传方式，这里不一一举例了。</p>
 <h2 id="0x03-审计技巧"><a href="#0x03-审计技巧" class="headerlink" title="0x03 审计技巧"></a>0x03 审计技巧</h2><p>当我们拿到一套源码时，主要通过以下几点来分析是否存在任意文件上传漏洞</p>
 <ol>
