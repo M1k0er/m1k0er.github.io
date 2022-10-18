@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-10-15T13:51:17.432Z</updated>
+  <updated>2022-10-18T17:33:34.734Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>对jfinal_cms一次代码审计</title>
+    <link href="http://example.com/2022/10/18/dui-jfinal-cms-yi-ci-dai-ma-shen-ji/"/>
+    <id>http://example.com/2022/10/18/dui-jfinal-cms-yi-ci-dai-ma-shen-ji/</id>
+    <published>2022-10-18T10:06:24.000Z</published>
+    <updated>2022-10-18T17:33:34.734Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;如果你不出去走走，你就会以为这就是世界。&lt;/p&gt;
+&lt;h2 id=&quot;0x01-关于项目&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>java之反射</title>
