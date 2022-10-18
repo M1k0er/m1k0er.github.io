@@ -469,7 +469,7 @@
 <p>运行mvn tomcat:run来启动程序</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018190838235.png"></p>
 <p>打开<code>http://localhost/jfinal_cms/</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018190940568.png" alt="image-20221018190940568"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018190940568.png"></p>
 <h2 id="0x03、审计过程"><a href="#0x03、审计过程" class="headerlink" title="0x03、审计过程"></a>0x03、审计过程</h2><h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><p>漏洞存在于<code>src/main/java/com/jflyfox/modules/admin/article/ArticleController.java</code>，在第51行，将<code>getBaseForm().getOrderBy()</code>赋值给变量orderBy，再来看看这两个函数具体实现</p>
 <p>getBaseForm()</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> BaseForm <span class="token function">getBaseForm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
