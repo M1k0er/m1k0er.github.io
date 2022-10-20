@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="对jfinal_cms一次代码审计, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="代码审计之XXE, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>对jfinal_cms一次代码审计 | m1k0er&#39;Blogs</title>
+    <title>代码审计之XXE | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">对jfinal_cms一次代码审计</h1>
+                    <h1 class="description center-align post-title">代码审计之XXE</h1>
                 </div>
             </div>
         </div>
@@ -436,7 +436,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-10-18
+                    2022-10-19
                 </div>
                 
 
@@ -457,56 +457,145 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>如果你不出去走走，你就会以为这就是世界。</p>
-<h2 id="0x01-关于项目"><a href="#0x01-关于项目" class="headerlink" title="0x01 关于项目"></a>0x01 关于项目</h2><p>jfinal cms是一个java开发的功能强大的信息咨询网站，采用了简洁强大的JFinal作为web框架，模板引擎用的是beetl，数据库用mysql，前端bootstrap框架。</p>
-<h2 id="0x02-环境搭建"><a href="#0x02-环境搭建" class="headerlink" title="0x02 环境搭建"></a>0x02 环境搭建</h2><p>1）、数据库的创建</p>
-<p>配置src/main/resources/conf/db.properties为你的数据库名和密码</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018185653377.png"></p>
-<p>将sql/jfinal_cms_v4.sql导入数据库中即可。</p>
-<p>2）、mvn install</p>
-<p>运行<code>mvn install</code>，提示<code>BUILD SUCCESS</code>即可。</p>
-<p>3）、mvn tomcat:run</p>
-<p>运行mvn tomcat:run来启动程序</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018190838235.png"></p>
-<p>打开<code>http://localhost/jfinal_cms/</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018190940568.png"></p>
-<h2 id="0x03、审计过程"><a href="#0x03、审计过程" class="headerlink" title="0x03、审计过程"></a>0x03、审计过程</h2><h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><p>漏洞存在于<code>src/main/java/com/jflyfox/modules/admin/article/ArticleController.java</code>，在第51行，将<code>getBaseForm().getOrderBy()</code>赋值给变量orderBy，再来看看这两个函数具体实现</p>
-<p>getBaseForm()</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> BaseForm <span class="token function">getBaseForm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    BaseForm form <span class="token operator">=</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getAttr</span><span class="token punctuation">(</span><span class="token string">"form"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> form <span class="token operator">==</span> null <span class="token operator">?</span> <span class="token keyword">new</span> <span class="token class-name">BaseForm</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">:</span> form<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>getOrderBy()</p>
-<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> String <span class="token function">getOrderBy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>StrUtils<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token function">getOrderColumn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token string">""</span><span class="token punctuation">;</span>
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>生命可以归结为一种简单的选择：要么忙于生存，要么赶着。</p>
+<h2 id="0x01-什么是XXE？"><a href="#0x01-什么是XXE？" class="headerlink" title="0x01 什么是XXE？"></a>0x01 什么是XXE？</h2><p>XXE（XML外部实体注入，XML External Entity) ，在应用程序解析XML输入时，当允许引用外部实体时，可构造恶意内容，导致读取任意文件、探测内网端口、攻击内网网站、发起DoS拒绝服务攻击、执行系统命令等。Java中的XXE支持sun.net.<a target="_blank" rel="noopener" href="http://www.protocol/">www.protocol</a> 里的所有协议：http，https，file，ftp，mailto，jar，netdoc。一般利用file协议读取文件，利用http协议探测内网，没有回显时可组合利用file协议和ftp协议来读取文件。</p>
+<h2 id="0x02-XXE审计函数"><a href="#0x02-XXE审计函数" class="headerlink" title="0x02 XXE审计函数"></a>0x02 XXE审计函数</h2><p>本篇文章基于<code>https://github.com/JoyChou93/java-sec-code</code>来做分析。</p>
+<p>在java中，xml解析的函数有以下几种：</p>
+<pre><code>javax.xml.parsers.DocumentBuilderFactory;
+javax.xml.parsers.SAXParser
+javax.xml.transform.TransformerFactory
+javax.xml.validation.Validator
+javax.xml.validation.SchemaFactory
+javax.xml.transform.sax.SAXTransformerFactory
+javax.xml.transform.sax.SAXSource
+org.xml.sax.XMLReader
+DocumentHelper.parseText
+DocumentBuilder
+org.xml.sax.helpers.XMLReaderFactory
+org.dom4j.io.SAXReader
+org.jdom.input.SAXBuilder
+org.jdom2.input.SAXBuilder
+javax.xml.bind.Unmarshaller
+javax.xml.xpath.XpathExpression
+javax.xml.stream.XMLStreamReader
+org.apache.commons.digester3.Digester
+rg.xml.sax.SAXParseExceptionpublicId</code></pre>
+<p>我们拿几种比较常见的来分析下。</p>
+<h3 id="XMLReader"><a href="#XMLReader" class="headerlink" title="XMLReader"></a>XMLReader</h3><p>XMLReader接口是一种通过回调读取XML文档的接口，如果使用默认的解析方法并且未对XML进行过滤时，就会产生不回显的XXE漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@PostMapping</span><span class="token punctuation">(</span><span class="token string">"/xmlReader/vuln"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">xmlReaderVuln</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        XMLReader xmlReader <span class="token operator">=</span> XMLReaderFactory<span class="token punctuation">.</span><span class="token function">createXMLReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        xmlReader<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// parse xml</span>
+        <span class="token keyword">return</span> <span class="token string">"xmlReader xxe vuln code"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>通过以下payload，我们可以成功触发XXE漏洞</p>
+<pre class="line-numbers language-xml-dtd"><code class="language-xml-dtd"><?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE Drunkbaby [ <!ENTITY xxe SYSTEM "http://i2m2ti.dnslog.cn"> ]>
+<root>&xxe;</root><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221020145201149.png"></p>
+<h3 id="SAXBuilder"><a href="#SAXBuilder" class="headerlink" title="SAXBuilder"></a>SAXBuilder</h3><p>SAXBuilder是一个JDOM解析器，使用了第三方SAX解析器来处理解析任务，当使用默认的解析方法并且未对XML进行过滤时，就会产生不回显的XXE漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/SAXBuilder/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">SAXBuilderVuln</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SAXBuilder builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SAXBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// org.jdom2.Document document</span>
+        builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// cause xxe</span>
+        <span class="token keyword">return</span> <span class="token string">"SAXBuilder xxe vuln code"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token string">" "</span> <span class="token operator">+</span> <span class="token function">getOrderColumn</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" "</span> <span class="token operator">+</span> <span class="token function">getOrderAsc</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">" "</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>当orderBy不为空时，则将orderBy拼接到sql语句中， 且没有经过任何过滤。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018223241945.png"></p>
-<p>复现如下：</p>
-<p>漏洞地址：<code>http://192.168.3.2/jfinal_cms/admin/article/list</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018224120087.png"></p>
-<p>全局搜索<code>getBaseForm().getOrderBy()</code>，可以发现多处有相同的调用方式。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221018224412194.png"></p>
-<h3 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h3><p>这个漏洞比较鸡肋，只能读取webapp下的文件，比如WEB-INF\web.xml。漏洞产生于模块管理处，即<code>src/main/java/com/jflyfox/modules/filemanager/FileManagerController.java</code>，先来看看它怎么处理传进来的<code>path</code>的。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019010449203.png"></p>
-<p>第58行和59行定义了需要的参数是<code>mode</code>和<code>path</code>，在第69行对传入的参数<code>path</code>进行了处理，跟进setGetVar方法看看</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019010859813.png"></p>
-<p>当传入的<code>path</code>不为空时，将传入的<code>path</code>通过scanitize方法进行处理，继续跟进</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019011027978.png"></p>
-<p>可以看到，当我们传入的<code>path</code>含有敏感字符时，则替换为空。</p>
-<p>了解到怎么对路径做处理后，我们跟进到第110行，当<code>mode</code>参数为download且<code>needPath</code>为true时,进入download方法，我们跟进去看看</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019011335209.png"></p>
-<p>download()</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019011621583.png"></p>
-<p>分析getRealFilePath()方法</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019011926287.png"></p>
-<p>可以传入File()中的值为根目录+<code>path</code>的参数值，返回到download()方法，如果路径存在，则在594行进入readFile方法，跟进到readFile方法</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019012126209.png"></p>
-<p>这里就不用加多阐述了，典型的文件IO流。复现结果如下：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221019012228609.png"></p>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="SAXReader"><a href="#SAXReader" class="headerlink" title="SAXReader"></a>SAXReader</h3><p>SAXReader属于第三方库，当使用默认的解析方法并且未对XML进行过滤时，就会产生不回显的XXE漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/SAXReader/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">SAXReaderVuln</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SAXReader reader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SAXReader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// org.dom4j.Document document</span>
+        reader<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// cause xxe</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token string">"SAXReader xxe vuln code"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>SAXParserFactory</p>
+<p>SAXParserFactory使应用程序能够配置和获取基于SAX的解析器以解析XML文档，当使用默认的解析方法并且未对XML进行过滤时，就会产生不回显的XXE漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/SAXParser/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">SAXParserVuln</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SAXParserFactory spf <span class="token operator">=</span> SAXParserFactory<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SAXParser parser <span class="token operator">=</span> spf<span class="token punctuation">.</span><span class="token function">newSAXParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        parser<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">DefaultHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// parse xml</span>
+        <span class="token keyword">return</span> <span class="token string">"SAXParser xxe vuln code"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Digester"><a href="#Digester" class="headerlink" title="Digester"></a>Digester</h3><p>Digester类通过将XML映射成java类来简化XML的处理，其触发的XXE是没有回显的。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/Digester/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">DigesterVuln</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Digester digester <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Digester</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        digester<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// parse xml</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token string">"Digester xxe vuln code"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="DocumentBuilder"><a href="#DocumentBuilder" class="headerlink" title="DocumentBuilder"></a>DocumentBuilder</h3><p>javax.xml.parsers包中的DocumentBuilderFactory用于创建DOM模式的解析器对象，当使用默认的解析方法并且未对XML进行过滤时，就会产生XXE漏洞。跟上面讲到的函数不同，其触发的XXE漏洞是有回显的。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/DocumentBuilder/vuln01"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">DocumentBuilderVuln01</span><span class="token punctuation">(</span>HttpServletRequest request<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String body <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DocumentBuilderFactory dbf <span class="token operator">=</span> DocumentBuilderFactory<span class="token punctuation">.</span><span class="token function">newInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DocumentBuilder db <span class="token operator">=</span> dbf<span class="token punctuation">.</span><span class="token function">newDocumentBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        StringReader sr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringReader</span><span class="token punctuation">(</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        InputSource is <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InputSource</span><span class="token punctuation">(</span>sr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Document document <span class="token operator">=</span> db<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>is<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// parse xml</span>
+
+            <span class="token comment" spellcheck="true">// 遍历xml节点name和value</span>
+        StringBuilder buf <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        NodeList rootNodeList <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> rootNodeList<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Node rootNode <span class="token operator">=</span> rootNodeList<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            NodeList child <span class="token operator">=</span> rootNode<span class="token punctuation">.</span><span class="token function">getChildNodes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> child<span class="token punctuation">.</span><span class="token function">getLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                Node node <span class="token operator">=</span> child<span class="token punctuation">.</span><span class="token function">item</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                buf<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">format</span><span class="token punctuation">(</span><span class="token string">"%s: %s\n"</span><span class="token punctuation">,</span> node<span class="token punctuation">.</span><span class="token function">getNodeName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> node<span class="token punctuation">.</span><span class="token function">getTextContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        sr<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> buf<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> EXCEPT<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="0x03-XXE修复"><a href="#0x03-XXE修复" class="headerlink" title="0x03 XXE修复"></a>0x03 XXE修复</h2><p>对于XXE的修复通用方式就是在使用XML解析时设置其属性，禁用DTD或者禁止使用外部实体。</p>
+<pre><code>//实例化解析类之后通常会支持三个配置
+obj.setFeature(&quot;http://apache.org/xml/features/disallow-doctype-decl&quot;, true);
+obj.setFeature(&quot;http://xml.org/sax/features/external-general-entities&quot;, false);
+obj.setFeature(&quot;http://xml.org/sax/features/external-parameter-entities&quot;, false);</code></pre>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>除了在java代码审计中学习xxe外，后面还得继续学习xxe的更多利用方式。</p>
 
                 
             </div>
@@ -533,7 +622,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/18/dui-jfinal-cms-yi-ci-dai-ma-shen-ji/">http://example.com/2022/10/18/dui-jfinal-cms-yi-ci-dai-ma-shen-ji/</a>
+                    <a href="http://example.com/2022/10/19/dai-ma-shen-ji-zhi-xxe/">http://example.com/2022/10/19/dai-ma-shen-ji-zhi-xxe/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -742,9 +831,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/10/19/dai-ma-shen-ji-zhi-xxe/">
                     <div class="card-image">
@@ -762,9 +852,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-19
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-19
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -777,6 +867,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -795,13 +886,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/10/15/java-zhi-fan-she/">
+                <a href="/2022/10/18/dui-jfinal-cms-yi-ci-dai-ma-shen-ji/">
                     <div class="card-image">
                         
                         
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/07.jpg" class="responsive-img" alt="java之反射">
+                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E9%A3%8E%E6%99%AF/11.jpg" class="responsive-img" alt="对jfinal_cms一次代码审计">
                         
-                        <span class="card-title">java之反射</span>
+                        <span class="card-title">对jfinal_cms一次代码审计</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -812,14 +903,14 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-15
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-18
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E7%BC%96%E7%A8%8B/" class="post-category">
-                                    编程
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                    代码审计
                                 </a>
                             
                             
@@ -829,12 +920,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">编程</span>
-                    </a>
-                    
-                    <a href="/tags/java/">
-                        <span class="chip bg-color">java</span>
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
                     </a>
                     
                 </div>
