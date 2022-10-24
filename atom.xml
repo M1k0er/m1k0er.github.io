@@ -69,6 +69,34 @@
   </entry>
   
   <entry>
+    <title>java之代理模式</title>
+    <link href="http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/"/>
+    <id>http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/</id>
+    <published>2022-10-15T08:44:24.000Z</published>
+    <updated>2022-10-23T19:37:32.762Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-代理模式&quot;&gt;&lt;a href=&quot;#0x00-代理模式&quot; class=&quot;headerlink&quot; title=&quot;0x00 代理模式&quot;&gt;&lt;/a&gt;0x00 代理模式&lt;/h2&gt;&lt;p&gt;我们先了解什么是代理。&lt;/p&gt;
+&lt;p&gt;&lt;img</summary>
+        
+      
+    
+    
+    
+    <category term="编程" scheme="http://example.com/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+    <category term="编程" scheme="http://example.com/tags/%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
     <title>java之反射</title>
     <link href="http://example.com/2022/10/15/java-zhi-fan-she/"/>
     <id>http://example.com/2022/10/15/java-zhi-fan-she/</id>
