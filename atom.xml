@@ -18,8 +18,8 @@
   
   <entry>
     <title>java审计之Zip Slip</title>
-    <link href="http://example.com/2022/10/29/java-shen-ji-zhi-zip-slip/"/>
-    <id>http://example.com/2022/10/29/java-shen-ji-zhi-zip-slip/</id>
+    <link href="http://example.com/2022/10/29/java-dai-ma-shen-ji-zhi-zip-slip/"/>
+    <id>http://example.com/2022/10/29/java-dai-ma-shen-ji-zhi-zip-slip/</id>
     <published>2022-10-29T03:45:24.000Z</published>
     <updated>2022-10-29T16:04:34.453Z</updated>
     
@@ -70,8 +70,8 @@
   
   <entry>
     <title>代码审计之XXE</title>
-    <link href="http://example.com/2022/10/19/dai-ma-shen-ji-zhi-xxe/"/>
-    <id>http://example.com/2022/10/19/dai-ma-shen-ji-zhi-xxe/</id>
+    <link href="http://example.com/2022/10/19/java-dai-ma-shen-ji-zhi-xxe/"/>
+    <id>http://example.com/2022/10/19/java-dai-ma-shen-ji-zhi-xxe/</id>
     <published>2022-10-18T18:49:24.000Z</published>
     <updated>2022-10-20T07:38:38.885Z</updated>
     
@@ -206,8 +206,8 @@
   
   <entry>
     <title>代码审计之任意文件上传</title>
-    <link href="http://example.com/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/"/>
-    <id>http://example.com/2022/10/12/dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/</id>
+    <link href="http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/"/>
+    <id>http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/</id>
     <published>2022-10-11T19:06:24.000Z</published>
     <updated>2022-10-13T14:57:08.171Z</updated>
     
@@ -285,8 +285,8 @@
   
   <entry>
     <title>代码审计之SQL注入</title>
-    <link href="http://example.com/2022/10/11/dai-ma-shen-ji-zhi-sql-zhu-ru/"/>
-    <id>http://example.com/2022/10/11/dai-ma-shen-ji-zhi-sql-zhu-ru/</id>
+    <link href="http://example.com/2022/10/11/java-dai-ma-shen-ji-zhi-sql-zhu-ru/"/>
+    <id>http://example.com/2022/10/11/java-dai-ma-shen-ji-zhi-sql-zhu-ru/</id>
     <published>2022-10-10T19:06:24.000Z</published>
     <updated>2022-10-11T18:41:13.516Z</updated>
     
