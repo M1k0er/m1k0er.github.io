@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-10-29T17:05:51.717Z</updated>
+  <updated>2022-11-02T10:18:06.206Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>javascript的原型链理解</title>
+    <link href="http://example.com/2022/11/01/javascript-de-yuan-xing-lian-li-jie/"/>
+    <id>http://example.com/2022/11/01/javascript-de-yuan-xing-lian-li-jie/</id>
+    <published>2022-11-01T09:33:24.000Z</published>
+    <updated>2022-11-02T10:18:06.206Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;一岁有一岁的味道，一站有一站的风景，何不停下繁忙的脚步看看沿途盛开的花。&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="编程" scheme="http://example.com/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+    <category term="编程" scheme="http://example.com/tags/%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="javascript" scheme="http://example.com/tags/javascript/"/>
+    
+  </entry>
   
   <entry>
     <title>java代码审计之Zip Slip</title>
