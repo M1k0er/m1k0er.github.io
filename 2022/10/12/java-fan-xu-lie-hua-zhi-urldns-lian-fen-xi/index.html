@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="畅捷通js敏感接口登录后台, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="java反序列化之URLDNS链分析, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>畅捷通js敏感接口登录后台 | m1k0er&#39;Blogs</title>
+    <title>java反序列化之URLDNS链分析 | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">畅捷通js敏感接口登录后台</h1>
+                    <h1 class="description center-align post-title">java反序列化之URLDNS链分析</h1>
                 </div>
             </div>
         </div>
@@ -411,8 +411,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">代码审计</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                                <span class="chip bg-color">反序列化</span>
                             </a>
                         
                     </div>
@@ -423,8 +427,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                代码审计
                             </a>
                         
                     </div>
@@ -457,26 +461,98 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>这个系统早期的时候在做攻防演练时遇到的，当时觉得挺有意思便顺手记下了挖掘这个漏洞的过程。</p>
-<h2 id="0x01-漏洞过程"><a href="#0x01-漏洞过程" class="headerlink" title="0x01 漏洞过程"></a>0x01 漏洞过程</h2><p>漏洞地址是：<code>http://xxx.com</code></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023936290.png"></p>
-<p>发现系统管理员账户无法访问。Google 相关漏洞，只能找到这一篇：<code>https://www.anquanke.com/post/id/195226</code>里面提到了几个漏洞：</p>
-<p>1、任意文件上传（利用时间竞争）</p>
-<p>2、管理员密码任意重置漏洞</p>
-<p>3、SQL注入漏洞</p>
-<p>4、接口未授权漏洞</p>
-<p>5、任意文件下载漏洞经过分析，第一个漏洞已经无法使用，访问该目录全都返回200，然后提示无法执行：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023452914.png"></p>
-<p>然后仔细看了下页面html代码，发现了这一段：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023546638.png"></p>
-<p>尝试构造新的url直接访问：<code>http://xxx.com/tplus/view/login.html?fromApp=b2b&amp;acc=1&amp;role=demo&amp;industry=edu</code>提示：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023701912.png"></p>
-<p>虽然提示获取演示账号失败，但是！！发现系统管理员页签可以使用了！！！接着按照文档里面的说法，来重置管理员密码。首先访问重置密码页面：<code>http://xxx.com/tplus/RecoverPassword.aspx</code>在源码中获取到真正的重置页面：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023752330.png"></p>
-<p>然后直接构造ajax请求，发送数据包：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023832103.png"></p>
-<p>Bingo！密码重置成功，直接登录到后台：</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221012023900292.png"></p>
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>由于没有JDK版本限制，且只依赖于原生类，所以URLDNS链一般用于验证是否存在反序列化漏洞，它的利用效果主要是通过发送一次dns请求，如果收到请求，则说明存在漏洞。</p>
+<h2 id="0x01-利用"><a href="#0x01-利用" class="headerlink" title="0x01 利用"></a>0x01 利用</h2><p>下载ysoserial并通过IDEA打开项目</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103214829896.png"></p>
+<p>依赖配置好之后，我们打开<code>src/main/java/ysoserial/GeneratePayload.java</code>，点击主函数main旁边的小箭头来生成一个<code>ysoserial.GeneratePayload</code>的运行配置。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103230728646.png"></p>
+<p>由于我们是要调试URLDNS的链，所以我们加上相应的参数即可</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221104005038067.png"></p>
+<p>写一个反序列化的demo</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>root<span class="token punctuation">;</span>
+<span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> ClassNotFoundException <span class="token punctuation">{</span>
+        SerializeUtil<span class="token punctuation">.</span><span class="token function">Deserialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">SerializeUtil</span><span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> Object <span class="token function">Deserialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> ClassNotFoundException <span class="token punctuation">{</span>
+        InputStream in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FileInputStream</span><span class="token punctuation">(</span><span class="token string">"urldns.ser"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ObjectInputStream objIn <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ObjectInputStream</span><span class="token punctuation">(</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Object obj <span class="token operator">=</span> objIn<span class="token punctuation">.</span><span class="token function">readObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行后可以发现dnslog收到解析请求，这就说明反序列化利用成功了。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103232750610.png"></p>
+<h2 id="0x02-分析"><a href="#0x02-分析" class="headerlink" title="0x02 分析"></a>0x02 分析</h2><p>我们来分析下ysoserial的URLDNS链执行流程是怎么样的</p>
+<p>前面我们说了，URLDNS链不需要依赖第三方包，且没有JDK版本限制，所以一般我们可以用来验证是否存在反序列化漏洞，打开<code>src/main/java/ysoserial/payloads/URLDNS.java</code>，在最上面的注释中，作者已经给出了调用链(Gadget chain)</p>
+<pre><code>HashMap.readObject()
+    HashMap.putVal()
+        HashMap.hash()
+            URL.hashCode()</code></pre>
+<p>我们来debug下看看它具体是怎么生成payload的。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103234510523.png"></p>
+<p>在55行生成了一个HashMap的实例类，这是因为在HashMap类中重写了readObject</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">readObject</span><span class="token punctuation">(</span>java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>ObjectInputStream s<span class="token punctuation">)</span>
+    <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> ClassNotFoundException <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Read in the threshold (ignored), loadfactor, and any hidden stuff</span>
+    s<span class="token punctuation">.</span><span class="token function">defaultReadObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">reinitialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>loadFactor <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> Float<span class="token punctuation">.</span><span class="token function">isNaN</span><span class="token punctuation">(</span>loadFactor<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InvalidObjectException</span><span class="token punctuation">(</span><span class="token string">"Illegal load factor: "</span> <span class="token operator">+</span>
+                                         loadFactor<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    s<span class="token punctuation">.</span><span class="token function">readInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// Read and ignore number of buckets</span>
+    <span class="token keyword">int</span> mappings <span class="token operator">=</span> s<span class="token punctuation">.</span><span class="token function">readInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Read number of mappings (size)</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>mappings <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">InvalidObjectException</span><span class="token punctuation">(</span><span class="token string">"Illegal mappings count: "</span> <span class="token operator">+</span>
+                                         mappings<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>mappings <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">// (if zero, use defaults)</span>
+        <span class="token comment" spellcheck="true">// Size the table using given load factor only if within</span>
+        <span class="token comment" spellcheck="true">// range of 0.25...4.0</span>
+        <span class="token keyword">float</span> lf <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0.25f</span><span class="token punctuation">,</span> loadFactor<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">4.0f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">float</span> fc <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">float</span><span class="token punctuation">)</span>mappings <span class="token operator">/</span> lf <span class="token operator">+</span> <span class="token number">1.0f</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> cap <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>fc <span class="token operator">&lt;</span> DEFAULT_INITIAL_CAPACITY<span class="token punctuation">)</span> <span class="token operator">?</span>
+                   DEFAULT_INITIAL_CAPACITY <span class="token operator">:</span>
+                   <span class="token punctuation">(</span>fc <span class="token operator">>=</span> MAXIMUM_CAPACITY<span class="token punctuation">)</span> <span class="token operator">?</span>
+                   MAXIMUM_CAPACITY <span class="token operator">:</span>
+                   <span class="token function">tableSizeFor</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>fc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">float</span> ft <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">float</span><span class="token punctuation">)</span>cap <span class="token operator">*</span> lf<span class="token punctuation">;</span>
+        threshold <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>cap <span class="token operator">&lt;</span> MAXIMUM_CAPACITY <span class="token operator">&amp;&amp;</span> ft <span class="token operator">&lt;</span> MAXIMUM_CAPACITY<span class="token punctuation">)</span> <span class="token operator">?</span>
+                     <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span>ft <span class="token operator">:</span> Integer<span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Check Map.Entry[].class since it's the nearest public type to</span>
+        <span class="token comment" spellcheck="true">// what we're actually creating.</span>
+        SharedSecrets<span class="token punctuation">.</span><span class="token function">getJavaOISAccess</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">checkArray</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> Map<span class="token punctuation">.</span>Entry<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> cap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"rawtypes"</span><span class="token punctuation">,</span><span class="token string">"unchecked"</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+        Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span> tab <span class="token operator">=</span> <span class="token punctuation">(</span>Node<span class="token operator">&lt;</span>K<span class="token punctuation">,</span>V<span class="token operator">></span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token keyword">new</span> <span class="token class-name">Node</span><span class="token punctuation">[</span>cap<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        table <span class="token operator">=</span> tab<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Read the keys and values, and put the mappings in the HashMap</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> mappings<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+            K key <span class="token operator">=</span> <span class="token punctuation">(</span>K<span class="token punctuation">)</span> s<span class="token punctuation">.</span><span class="token function">readObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token annotation punctuation">@SuppressWarnings</span><span class="token punctuation">(</span><span class="token string">"unchecked"</span><span class="token punctuation">)</span>
+            V value <span class="token operator">=</span> <span class="token punctuation">(</span>V<span class="token punctuation">)</span> s<span class="token punctuation">.</span><span class="token function">readObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">putVal</span><span class="token punctuation">(</span><span class="token function">hash</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们在57行下个断点，然后点击调试</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103234915167.png"></p>
+<p>跟进到putVal方法，继续跟进</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103235234660.png"></p>
+<p>跟进到hash方法</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103235337127.png"></p>
+<p>当传入的key为空时，返回0，否则执行key.hashcode方法，这里的key为我们传入的url地址：<code>http://6wegpw.dnslog.cn</code>，我们继续跟进到key.hashcode</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221104000147061.png"></p>
+<p>这里的handler是URLStreamHandler的对象，在序列化时会将hashCode的值设为-1，我们跟进到hashCode看看</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221104000936475.png"></p>
+<p>最后通过359行的<code>getHostAddress()</code>方法来发起请求。到此，整个URLDNS链就分析完了。</p>
+<h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><p>在默认情况下，hashCode的值为-1，当URL对象put到HashMap时，生成序列化payload时会对传入的URL发起一次请求，ysoserial给出的解决方法是重写URLStreamHandler 的 <code>getHostAddress()</code> 方法，使其为空，这样即使hashCode为-1也不会对我们传入的url发起dns请求，然后再通过反射的方式重新将hashCode设置为-1，这样在反序列化时就会对我们传入的url发起DNS请求了。</p>
 
                 
             </div>
@@ -503,7 +579,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">http://example.com/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/</a>
+                    <a href="http://example.com/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/">http://example.com/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -541,8 +617,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
+                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">代码审计</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+                                    <span class="chip bg-color">反序列化</span>
                                 </a>
                             
                         </div>
@@ -716,13 +796,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/">
+                <a href="/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="java反序列化之URLDNS链分析">
+                        <img src="/medias/featureimages/4.jpg" class="responsive-img" alt="java代码审计之任意文件上传">
                         
-                        <span class="card-title">java反序列化之URLDNS链分析</span>
+                        <span class="card-title">java代码审计之任意文件上传</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -754,10 +834,6 @@
                         <span class="chip bg-color">代码审计</span>
                     </a>
                     
-                    <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
-                        <span class="chip bg-color">反序列化</span>
-                    </a>
-                    
                 </div>
                 
             </div>
@@ -769,13 +845,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/10/11/java-zhi-io-liu/">
+                <a href="/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="java之IO流">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="畅捷通js敏感接口登录后台">
                         
-                        <span class="card-title">java之IO流</span>
+                        <span class="card-title">畅捷通js敏感接口登录后台</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -786,14 +862,14 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-11
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E7%BC%96%E7%A8%8B/" class="post-category">
-                                    编程
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    渗透测试
                                 </a>
                             
                             
@@ -803,12 +879,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E7%BC%96%E7%A8%8B/">
-                        <span class="chip bg-color">编程</span>
-                    </a>
-                    
-                    <a href="/tags/java/">
-                        <span class="chip bg-color">java</span>
+                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">渗透测试</span>
                     </a>
                     
                 </div>
