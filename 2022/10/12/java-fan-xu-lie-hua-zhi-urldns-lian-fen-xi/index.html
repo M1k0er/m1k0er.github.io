@@ -552,7 +552,7 @@
 <p>这里的handler是URLStreamHandler的对象，在序列化时会将hashCode的值设为-1，我们跟进到hashCode看看</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221104000936475.png"></p>
 <p>最后通过359行的<code>getHostAddress()</code>方法来发起请求。到此，整个URLDNS链就分析完了。</p>
-<p>在默认情况下，hashCode的值为-1，当URL对象put到HashMap时，生成序列化payload时会对传入的URL发起一次请求，ysoserial给出的解决方法是重写URLStreamHandler 的 <code>getHostAddress()</code> 方法，使其为空，这样即使hashCode为-1也不会对我们传入的url发起dns请求，然后再通过反射的方式重新将hashCode设置为-1，这样在反序列化时就会对我们传入的url发起请求了。</p>
+<p>这里说个关键的细节，在默认情况下，hashCode的值为-1，当URL对象put到HashMap时，生成序列化payload时会对传入的URL发起一次请求，ysoserial给出的解决方法是重写URLStreamHandler 的 <code>getHostAddress()</code> 方法，使其为空，这样即使hashCode为-1也不会对我们传入的url发起dns请求，然后再通过反射的方式重新将hashCode设置为-1，这样在反序列化时就会对我们传入的url发起请求了。</p>
 <h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><p>URLDNS链的分析算是分析调用链中个人认为最简单的，如果文章有写得不足的地方，还希望师傅们指点下。</p>
 
                 
