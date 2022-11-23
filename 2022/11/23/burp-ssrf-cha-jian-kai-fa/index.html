@@ -459,7 +459,7 @@
             <div id="articleContent">
                 <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>burpsuite没有被动扫描ssrf的插件，而最近刚好在学java，于是乎动手撸了一个，这里就记录下大概的编写思路。</p>
 <h2 id="0x01-环境准备"><a href="#0x01-环境准备" class="headerlink" title="0x01 环境准备"></a>0x01 环境准备</h2><p>这里我使用eclipse+maven来编写插件,新建一个maven项目</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123170020311.png" alt="image-20221123170020311"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123170020311.png"></p>
 <p>导入依赖</p>
 <pre class="line-numbers language-xml"><code class="language-xml"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>project</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://maven.apache.org/POM/4.0.0<span class="token punctuation">"</span></span>
          <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
@@ -632,8 +632,8 @@
     <span class="token keyword">return</span> null<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最后的实际效果如下</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223023569.png" alt="image-20221123223023569"></p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223047948.png" alt="image-20221123223047948"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223023569.png"></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223047948.png"></p>
 <p>0x03 参考资料</p>
 <pre><code>https://portswigger.net/burp/extender/api/
 https://github.com/bit4woo/burp-api-drops</code></pre>
