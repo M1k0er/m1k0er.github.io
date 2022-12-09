@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-12-06T20:07:55.110Z</updated>
+  <updated>2022-12-09T14:43:09.610Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Java表达式注入</title>
+    <link href="http://example.com/2022/12/08/java-biao-da-shi-zhu-ru/"/>
+    <id>http://example.com/2022/12/08/java-biao-da-shi-zhu-ru/</id>
+    <published>2022-12-07T16:30:24.000Z</published>
+    <updated>2022-12-09T14:43:09.610Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;0x00-概念&quot;&gt;&lt;a href=&quot;#0x00-概念&quot; class=&quot;headerlink&quot; title=&quot;0x00 概念&quot;&gt;&lt;/a&gt;0x00</summary>
+        
+      
+    
+    
+    
+    <category term="代码审计" scheme="http://example.com/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+    
+    <category term="代码审计" scheme="http://example.com/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/"/>
+    
+  </entry>
   
   <entry>
     <title>CVE-2022-22963漏洞分析</title>
@@ -509,25 +534,6 @@
     <summary type="html">&lt;h2 id=&quot;1、通过数组包裹关键值&quot;&gt;&lt;a href=&quot;#1、通过数组包裹关键值&quot; class=&quot;headerlink&quot;</summary>
         
       
-    
-    
-    
-    <category term="渗透测试" scheme="http://example.com/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
-    
-    
-    <category term="渗透测试" scheme="http://example.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>我的信息收集论</title>
-    <link href="http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/"/>
-    <id>http://example.com/2021/01/22/wo-de-xin-xi-shou-ji-lun/</id>
-    <published>2021-01-22T12:06:24.000Z</published>
-    <updated>2022-10-10T13:31:29.326Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;一、前言&quot;&gt;&lt;a href=&quot;#一、前言&quot; class=&quot;headerlink&quot; title=&quot;一、前言&quot;&gt;&lt;/a&gt;一、前言&lt;/h1&gt;&lt;p&gt;众所周知，做漏洞挖掘前期的信息收集工作起着非常大的作用，可以说信息收集的工作决定了你在做漏洞挖掘时的效率，本篇文章旨在记录下我的信息收集准备工作。&lt;/p&gt;</summary>
     
     
     
