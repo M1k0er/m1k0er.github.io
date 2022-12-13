@@ -577,7 +577,7 @@
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这里本来是用ceye来进行检测漏洞的，但是实际效果并不好，数据一多直接503，索性搭建个dnslog来检测了。如果body为true，则说明存在漏洞，返回true，反之返回flase。</p>
+<p>这里本来是用ceye来进行检测漏洞的，但是实际效果并不好，数据一多直接503，索性使用lijiejie的eyes.sh来检测了。如果body为true，则说明存在漏洞，返回true，反之返回flase，有条件的师傅也可以根据<code>https://github.com/bugscanteam/dnslog/</code>自行搭建dnslog平台，再简单修改下代码即可</p>
 <p>3、检测漏洞</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">public</span> List<span class="token operator">&lt;</span>IScanIssue<span class="token operator">></span> <span class="token function">checkVul</span><span class="token punctuation">(</span>IHttpRequestResponse baseRequestResponse<span class="token punctuation">,</span>List<span class="token operator">&lt;</span>IScanIssue<span class="token operator">></span> issues<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         IRequestInfo analyzeRequest <span class="token operator">=</span> helpers<span class="token punctuation">.</span><span class="token function">analyzeRequest</span><span class="token punctuation">(</span>baseRequestResponse<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//对HTTP请求进行分析</span>
@@ -638,6 +638,8 @@
 <p>最后的实际效果如下</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223023569.png"></p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221123223047948.png"></p>
+<p>项目地址：</p>
+<pre><code>https://github.com/M1k0er/SSRF-SCAN</code></pre>
 <h2 id="0x03-参考资料"><a href="#0x03-参考资料" class="headerlink" title="0x03 参考资料"></a>0x03 参考资料</h2><pre><code>https://portswigger.net/burp/extender/api/
 https://github.com/bit4woo/burp-api-drops</code></pre>
 
