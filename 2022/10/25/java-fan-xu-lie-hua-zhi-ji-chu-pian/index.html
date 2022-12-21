@@ -568,6 +568,12 @@
         <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们先来看看反序列化后的特征，一般识别反序列化数据有三个特征</p>
+<p>1、开头带有sr、类名字眼</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221221153601210.png"></p>
+<p>2、base64的反序列化数据开头带有rO0A字眼</p>
+<p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221221153805785.png"></p>
+<p>3、content-type头为application/x-serialization</p>
 <p>运行结果如下：</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221024233727062.png"></p>
 <h2 id="0x03-注意点"><a href="#0x03-注意点" class="headerlink" title="0x03 注意点"></a>0x03 注意点</h2><ul>
