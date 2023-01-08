@@ -643,7 +643,8 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>执行结果如下：</p>
 <p><img src="https://pingo78.oss-cn-hangzhou.aliyuncs.com/images/image-20221025002204310.png"></p>
-<h2 id="0x04-漏洞审计"><a href="#0x04-漏洞审计" class="headerlink" title="0x04 漏洞审计"></a>0x04 漏洞审计</h2><p>在平时的代码审计过程中，我们可以快速定位到以下可能存在问题的代码块：</p>
+<h2 id="0x04-漏洞审计"><a href="#0x04-漏洞审计" class="headerlink" title="0x04 漏洞审计"></a>0x04 漏洞审计</h2><p>对于反序列化漏洞的挖掘，其实本质上来说是已知source(入口方法)和sink(危险方法)，怎么去获取整个调用链的问题。</p>
+<p>在平时的代码审计过程中，我们可以快速定位到以下可能存在问题的source：</p>
 <pre><code>ObjectInputStream.readObject()
 ObjectInputStream.readUnshared()
 XMLDecoder.readObject()
@@ -1218,7 +1219,7 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
         <div class="col s12 m8 l8 copy-right">
             Copyright&nbsp;&copy;
             
-                <span id="year">2022</span>
+                <span id="year">2022-2023</span>
             
             <span id="year">2022</span>
             <a href="/about" target="_blank">m1k0er</a>
