@@ -615,7 +615,7 @@
 <h2 id="0x03-审计技巧"><a href="#0x03-审计技巧" class="headerlink" title="0x03 审计技巧"></a>0x03 审计技巧</h2><p>当我们拿到一套源码时，主要通过以下几点来分析是否存在任意文件上传漏洞</p>
 <ol>
 <li> 程序是白名单还是黑名单校验后缀。</li>
-<li> 是否校验文件上传的后缀，这里还有个细节需要提一下，程序员经常使用<code>suffix=fileName.substring(filename.indexOf(&quot;.&quot;))</code>来获取上传文件的后缀名，如果攻击者上传的文件名为shell.jpg.jsp。这个时候suffix为<code>.jpg.php</code>，这个时候肯定不在黑名单内，修复的方式也很简单，IndexOf()替换成 lastIndexOf()。</li>
+<li> 是否校验文件上传的后缀，这里还有个细节需要提一下，程序员经常使用<code>suffix=fileName.substring(filename.indexOf(&quot;.&quot;))</code>来获取上传文件的后缀名，如果攻击者上传的文件名为shell.jpg.jsp。这个时候suffix为<code>.jpg.jsp</code>，这个时候肯定不在黑名单内，修复的方式也很简单，IndexOf()替换成 lastIndexOf()，这里获取到的后缀名就是jsp了</li>
 <li>文件后缀对比， <code>string.equals(fileSuffix)</code>函数不区分大小写。这时可通过 string.Jsp 这种方式绕过。修复方案：在 比较之前使用 <code>fileSuffix.toLowerCase() </code>将前端取得的后缀名变换成小写或者改成 <code>s.equalsIgnoreCase(fileSuffix)</code> 即忽略大小 </li>
 <li>系统是否通过文件类型来校验<code> String contentType = file.getContentType()</code>; 这种方式可以前端修改文件类型绕过上传 </li>
 <li>java 程序中涉及到文件上传的函数，比如：<code>MultipartFile</code></li>
@@ -869,6 +869,59 @@ MultipartRequestEntity</code></pre>
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2022/10/13/java-zhi-shiro-ren-zheng-yu-shou-quan/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="java之Shiro认证与授权">
+                        
+                        <span class="card-title">java之Shiro认证与授权</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E7%BC%96%E7%A8%8B/" class="post-category">
+                                    编程
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%BC%96%E7%A8%8B/">
+                        <span class="chip bg-color">编程</span>
+                    </a>
+                    
+                    <a href="/tags/java/">
+                        <span class="chip bg-color">java</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2022/10/12/java-fan-xu-lie-hua-zhi-urldns-lian-fen-xi/">
                     <div class="card-image">
                         
@@ -885,9 +938,9 @@ MultipartRequestEntity</code></pre>
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -909,55 +962,6 @@ MultipartRequestEntity</code></pre>
                     
                     <a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
                         <span class="chip bg-color">反序列化</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2022/10/12/chang-jie-tong-js-min-gan-jie-kou-deng-lu-hou-tai/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="畅捷通js敏感接口登录后台">
-                        
-                        <span class="card-title">畅捷通js敏感接口登录后台</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-10-12
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-bookmark fa-fw icon-category"></i>
-                            
-                            <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="post-category">
-                                    渗透测试
-                                </a>
-                            
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">
-                        <span class="chip bg-color">渗透测试</span>
                     </a>
                     
                 </div>
